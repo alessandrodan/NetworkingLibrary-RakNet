@@ -5,6 +5,4 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include <WinSock2.h>
-
-#pragma comment(lib, "ws2_32.lib")
+#pragma comment( lib, "SLikeNet_LibStatic_Debug_x64.lib" )

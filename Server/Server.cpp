@@ -1,7 +1,17 @@
 #include <iostream>
-#include "Network/Test.h"
+#include <Network/NetDevice.h>
 
 int main()
 {
-    std::cout << "Hello World!" << CTest::GetTest() << std::endl;
+	if (!Net::CNetDevice::Create())
+	{
+		std::cerr << "Failed to create winsock" << std::endl;
+		system("pause");
+		return 0;
+	}
+
+	Net::CNetDevice::Destroy();
+
+	system("pause");
+	return 0;
 }
