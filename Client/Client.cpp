@@ -18,7 +18,7 @@ bool Client::Initialize(const char* c_szAddr, int port)
 		return false;
 	}
 
-	const auto connectionAttemptResult = CNetDevice::peer->Connect(c_szAddr, port, 0, 0, 0, CLIENT_CONNECTION_ATTEMPT_COUNT, CLIENT_TIME_BTW_SEND_CONNECTION_ATTEMPT_COUNT);
+	const auto connectionAttemptResult = CNetDevice::peer->Connect(c_szAddr, port, 0, 0, 0, 0, CLIENT_CONNECTION_ATTEMPT_COUNT, CLIENT_TIME_BTW_SEND_CONNECTION_ATTEMPT_COUNT);
 	if (connectionAttemptResult != SLNet::CONNECTION_ATTEMPT_STARTED)
 	{
 		std::cout << "Failed to connect client! Quitting - error code: " << connectionAttemptResult << std::endl;

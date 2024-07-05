@@ -7,6 +7,7 @@ namespace Net
 
 	void CNetDevice::Destroy()
 	{
+		peer->Shutdown(1000, 0, IMMEDIATE_PRIORITY);
 		SLNet::RakPeerInterface::DestroyInstance(peer);
 	}
 
