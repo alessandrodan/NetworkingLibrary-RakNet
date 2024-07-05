@@ -12,6 +12,11 @@ int main()
 	}
 
 	Server server;
+	if (server.Initialize("localhost", 8080))
+	{
+		while (true)
+			server.Process();
+	}
 
 	Net::CNetDevice::Destroy();
 

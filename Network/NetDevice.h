@@ -10,7 +10,6 @@ namespace Net
 			static void Destroy();
 			static bool Create();
 
-		private:
 			static SLNet::RakPeerInterface* peer;
 	};
 }

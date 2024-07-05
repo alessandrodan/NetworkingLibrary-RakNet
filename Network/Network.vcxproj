@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Definition.h" />
     <ClInclude Include="NetDevice.h" />
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>

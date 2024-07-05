@@ -12,6 +12,13 @@ int main()
 	}
 
 	Client client;
+    if (client.Initialize("localhost", 8080))
+    {
+        while (true)
+        {
+            client.Process();
+        }
+    }
 
 	Net::CNetDevice::Destroy();
 

@@ -6,3 +6,5 @@
 #endif
 
 #pragma comment( lib, "SLikeNet_LibStatic_Debug_x64.lib" )
+
+#pragma warning(disable: 26812)
