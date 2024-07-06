@@ -8,6 +8,11 @@
 
 using namespace Net;
 
+Client::Client()
+{
+	isConnected = false;
+}
+
 bool Client::Initialize(const char* c_szAddr, int port)
 {
 	SLNet::SocketDescriptor socketDescriptor;
@@ -25,6 +30,8 @@ bool Client::Initialize(const char* c_szAddr, int port)
 		return false;
 	}
 
+	CNetDevice::peer->SetOccasionalPing(true);
+
 	std::cout << "socket connected to the server" << std::endl;
 
     return true;
@@ -32,4 +39,44 @@ bool Client::Initialize(const char* c_szAddr, int port)
 
 void Client::Process()
 {
+	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
+	{
+		switch (packet->data[0])
+		{
+			case ID_CONNECTION_REQUEST_ACCEPTED:
+				std::cout <<  "Our connection request has been accepted" << std::endl;
+				isConnected = true;
+				break;
+
+			case ID_CONNECTION_ATTEMPT_FAILED:
+				std::cout << "Our connection request has been FAILED" << std::endl;
+				isConnected = false;
+				break;
+
+			case ID_DISCONNECTION_NOTIFICATION:
+				std::cout << "Server Remote Disconnected" << std::endl;
+				break;
+
+			case ID_REMOTE_DISCONNECTION_NOTIFICATION:
+				std::cout << "Server Disconnected" << std::endl;
+				break;
+
+			case ID_CONNECTION_LOST:
+				std::cout << "Server Connection lost" << std::endl;
+				break;
+
+			case ID_REMOTE_CONNECTION_LOST:
+				std::cout << "Server Connection Remote lost" << std::endl;
+				break;
+
+			default:
+				std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+				CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+		}
+	}
+}
+
+bool Client::IsConnected()
+{
+	return isConnected;
 }

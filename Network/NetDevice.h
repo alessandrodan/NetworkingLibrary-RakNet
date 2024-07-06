@@ -8,6 +8,7 @@ namespace Net
 	{
 		public:
 			static void Destroy();
+			static void CloseConnection();
 			static bool Create();
 
 			static SLNet::RakPeerInterface* peer;

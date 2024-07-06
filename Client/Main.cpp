@@ -1,4 +1,5 @@
 #include <iostream>
+#include <conio.h>
 #include <Network/NetDevice.h>
 #include "Client.h"
 
@@ -17,7 +18,18 @@ int main()
         while (true)
         {
             client.Process();
+
+			if (client.IsConnected())
+			{
+				if (_kbhit())
+				{
+					if (_getch() == 27) // 'Esc' key
+						break;
+				}
+			}
         }
+
+		Net::CNetDevice::CloseConnection();
     }
 
 	Net::CNetDevice::Destroy();

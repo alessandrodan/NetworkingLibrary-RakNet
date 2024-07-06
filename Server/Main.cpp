@@ -1,4 +1,5 @@
 #include <iostream>
+#include <conio.h>
 #include <Network/NetDevice.h>
 #include "Server.h"
 
@@ -15,7 +16,15 @@ int main()
 	if (server.Initialize("localhost", 8080))
 	{
 		while (true)
+		{
 			server.Process();
+
+			if (_kbhit())
+			{
+				if (_getch() == 27) // 'Esc' key
+					break;
+			}
+		}
 	}
 
 	Net::CNetDevice::Destroy();

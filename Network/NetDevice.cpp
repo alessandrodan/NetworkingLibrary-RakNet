@@ -11,6 +11,12 @@ namespace Net
 		SLNet::RakPeerInterface::DestroyInstance(peer);
 	}
 
+	void CNetDevice::CloseConnection()
+	{
+		if (auto target = peer->GetSystemAddressFromIndex(0); target != SLNet::UNASSIGNED_SYSTEM_ADDRESS)
+			peer->CloseConnection(target, true, 0, IMMEDIATE_PRIORITY);
+	}
+
 	bool CNetDevice::Create()
 	{
 		peer = SLNet::RakPeerInterface::GetInstance();

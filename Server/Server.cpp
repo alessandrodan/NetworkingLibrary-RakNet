@@ -24,6 +24,11 @@ bool Server::Initialize(const char* c_szAddr, int port)
 
 	CNetDevice::peer->SetMaximumIncomingConnections(SERVER_MAX_INCOMING_CONNECTIONS);
 
+	CNetDevice::peer->SetIncomingPassword(0, 0);
+	CNetDevice::peer->SetTimeoutTime(10000, SLNet::UNASSIGNED_SYSTEM_ADDRESS);
+	CNetDevice::peer->SetOccasionalPing(true);
+	CNetDevice::peer->SetUnreliableTimeout(1000);
+
 	std::cout << "Socket Listening..." << std::endl;
 
     return true;
@@ -31,4 +36,25 @@ bool Server::Initialize(const char* c_szAddr, int port)
 
 void Server::Process()
 {
+	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
+	{
+		switch (packet->data[0])
+		{
+			case ID_NEW_INCOMING_CONNECTION:
+				std::cout << "New incoming connection: " << packet->systemAddress.ToString() << std::endl;
+				break;
+
+			case ID_DISCONNECTION_NOTIFICATION:
+				std::cout << "Client Disconnected: " << packet->systemAddress.ToString() << std::endl;
+				break;
+
+			case ID_CONNECTION_LOST:
+				std::cout << "Client Connection lost: " << packet->systemAddress.ToString() << std::endl;
+				break;
+
+			default:
+				std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+				CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+		}
+	}
 }
