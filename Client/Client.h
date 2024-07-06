@@ -11,6 +11,8 @@ class Client
 
 		bool IsConnected();
 
+		void TestSend();
+
 	private:
 		bool isConnected;
 };

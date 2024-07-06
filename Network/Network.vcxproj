@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Definition.h" />
     <ClInclude Include="NetDevice.h" />
+    <ClInclude Include="PacketDefinition.h" />
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <ItemGroup>

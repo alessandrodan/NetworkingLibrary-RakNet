@@ -19,14 +19,25 @@ int main()
         {
             client.Process();
 
-			if (client.IsConnected())
-			{
-				if (_kbhit())
-				{
-					if (_getch() == 27) // 'Esc' key
-						break;
-				}
-			}
+            if (client.IsConnected() && _kbhit())
+            {
+                std::string input;
+
+                char ch = _getch();
+                while (ch != '\r')
+                {
+                    input += ch;
+                    std::cout << ch;
+                    ch = _getch();
+                }
+
+                std::cout << std::endl;
+
+                if (input == "ok")
+                    client.TestSend();
+                else if (input == "q")
+                    break;
+            }
         }
 
 		Net::CNetDevice::CloseConnection();

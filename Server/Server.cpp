@@ -2,9 +2,11 @@
 #include <iostream>
 #include <slikenet/types.h>
 #include <slikenet/MessageIdentifiers.h>
+#include <slikenet/BitStream.h>
 #include <Network/NetDevice.cpp>
 #include <Network/Definition.h>
 #include "Server.h"
+#include <Network/PacketDefinition.h>
 
 using namespace Net;
 
@@ -52,9 +54,44 @@ void Server::Process()
 				std::cout << "Client Connection lost: " << packet->systemAddress.ToString() << std::endl;
 				break;
 
+			case PacketHeader::HEADER_ACTION1:
+			{
+				TestRecv(packet);
+				TestSend(packet);
+				break;
+			}
+
 			default:
 				std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
 				CNetDevice::peer->CloseConnection(packet->systemAddress, true);
 		}
 	}
+}
+
+bool Server::TestRecv(SLNet::Packet* packet)
+{
+	if (!packet)
+		return false;
+
+	TPacketAction1 action1;
+	if (packet->length != sizeof(action1))
+		return false;
+
+	SLNet::BitStream bsIn(packet->data, packet->length, false);
+	bsIn.Read((char*)&action1, sizeof(action1));
+
+	std::cout << "HEADER_ACTION1 receved. num = " << action1.numIntero << std::endl;
+
+	return true;
+}
+
+bool Server::TestSend(SLNet::Packet* packet)
+{
+	TPacketResponse response;
+
+	SLNet::BitStream bsOut;
+	bsOut.Write((char*)&response, sizeof(response));
+	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, packet->systemAddress, false);
+
+	return true;
 }

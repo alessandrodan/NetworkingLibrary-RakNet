@@ -4,6 +4,7 @@
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="NetDevice.h" />
     <ClInclude Include="Definition.h" />
+    <ClInclude Include="PacketDefinition.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StdAfx.cpp" />

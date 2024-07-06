@@ -1,5 +1,7 @@
 #pragma once
 
+#include <slikenet/types.h>
+
 class Server
 {
 	public:
@@ -8,4 +10,7 @@ class Server
 
 		bool Initialize(const char* c_szAddr, int port);
 		void Process();
+
+		bool TestRecv(SLNet::Packet* packet);
+		bool TestSend(SLNet::Packet* packet);
 };

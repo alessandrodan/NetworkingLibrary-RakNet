@@ -1,10 +1,12 @@
 #include "StdAfx.h"
 #include <iostream>
 #include <slikenet/types.h>
+#include <slikenet/BitStream.h>
 #include <slikenet/MessageIdentifiers.h>
 #include <Network/NetDevice.cpp>
 #include "Client.h"
 #include <Network/Definition.h>
+#include <Network/PacketDefinition.h>
 
 using namespace Net;
 
@@ -69,6 +71,10 @@ void Client::Process()
 				std::cout << "Server Connection Remote lost" << std::endl;
 				break;
 
+			case HEADER_RESPONSE:
+				std::cout << "HEADER_RESPONSE" << std::endl;
+				break;
+
 			default:
 				std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
 				CNetDevice::peer->CloseConnection(packet->systemAddress, true);
@@ -79,4 +85,14 @@ void Client::Process()
 bool Client::IsConnected()
 {
 	return isConnected;
+}
+
+void Client::TestSend()
+{
+	TPacketAction1 packet;
+	packet.numIntero = 5;
+
+	SLNet::BitStream bsOut;
+	bsOut.Write((char*)&packet, sizeof(packet));
+	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
