@@ -92,7 +92,7 @@ void Client::TestSend()
 	TPacketAction1 packet;
 	packet.numIntero = 5;
 
-	SLNet::BitStream bsOut;
+	SLNet::BitStream bsOut(sizeof(packet));
 	bsOut.Write((char*)&packet, sizeof(packet));
 	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }

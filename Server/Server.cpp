@@ -89,7 +89,7 @@ bool Server::TestSend(SLNet::Packet* packet)
 {
 	TPacketResponse response;
 
-	SLNet::BitStream bsOut;
+	SLNet::BitStream bsOut(sizeof(response));
 	bsOut.Write((char*)&response, sizeof(response));
 	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, packet->systemAddress, false);
 
