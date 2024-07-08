@@ -12,7 +12,8 @@ using namespace Net;
 
 Server::Server()
 {
-	m_packetHeader = std::make_unique<CServerPacketHeaderMap>();
+	m_packetHeader = std::make_unique<PacketManager>();
+	__LoadPacketHeaders();
 }
 
 bool Server::Initialize(const char* c_szAddr, int port)
@@ -41,33 +42,22 @@ bool Server::Initialize(const char* c_szAddr, int port)
     return true;
 }
 
+void Server::__LoadPacketHeaders()
+{
+	m_packetHeader->Set(PacketCGHeader::HEADER_CG_ACTION1, PacketManager::TPacketType(sizeof(TPacketCGAction1), &Server::TestRecv));
+}
+
 void Server::Process()
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{
-		Net::CAbstractPacketHeaderMap::TPacketType packetType;
+		PacketManager::TPacketType packetType;
 		if (m_packetHeader->Get(packet->data[0], &packetType))
 		{
 			if (packet->length == packetType.iPacketSize)
-			{
-				switch (packet->data[0])
-				{
-					case PacketCGHeader::HEADER_CG_ACTION1:
-					{
-						TestRecv(packet);
-						TestSend(packet);
-						break;
-					}
-
-					default:
-						std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-						CNetDevice::peer->CloseConnection(packet->systemAddress, true);
-				}
-			}
+				(this->*packetType.packetHandler)(packet);
 			else
-			{
 				std::cout << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
-			}
 		}
 		else
 		{
@@ -107,6 +97,7 @@ bool Server::TestRecv(SLNet::Packet* packet)
 
 	std::cout << "HEADER_CG_ACTION1 receved. num = " << action1.numIntero << std::endl;
 
+	TestSend(packet);
 	return true;
 }
 

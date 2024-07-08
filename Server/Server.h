@@ -1,20 +1,26 @@
 #pragma once
 
 #include <slikenet/types.h>
-#include "ServerPacketHeaderMap.h"
+#include <Network/AbstractEntity.h>
+#include <Network/PacketManager.hpp>
 
-class Server
+class Server : public Net::CAbstractEntity
 {
 	public:
 		Server();
 		~Server() = default;
 
-		bool Initialize(const char* c_szAddr, int port);
-		void Process();
+		bool Initialize(const char* c_szAddr, int port) override;
+		void Process() override;
 
+	protected:
+		void __LoadPacketHeaders() override;
+
+	public:
 		bool TestRecv(SLNet::Packet* packet);
 		bool TestSend(SLNet::Packet* packet);
 
 	private:
-		std::unique_ptr<CServerPacketHeaderMap> m_packetHeader;
+		using PacketManager = Net::CPacketManager<Server>;
+		std::unique_ptr<PacketManager> m_packetHeader;
 };

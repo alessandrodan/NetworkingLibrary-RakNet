@@ -19,14 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractPacketHeaderMap.h" />
+    <ClInclude Include="AbstractEntity.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="NetDevice.h" />
     <ClInclude Include="PacketDefinition.h" />
+    <ClInclude Include="PacketManager.hpp" />
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AbstractPacketHeaderMap.cpp" />
     <ClCompile Include="NetDevice.cpp" />
     <ClCompile Include="StdAfx.cpp" />
   </ItemGroup>

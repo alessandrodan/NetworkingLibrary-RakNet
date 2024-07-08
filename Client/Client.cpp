@@ -13,7 +13,8 @@ using namespace Net;
 Client::Client()
 {
 	isConnected = false;
-	m_packetHeader = std::make_unique<CClientPacketHeaderMap>();
+	m_packetHeader = std::make_unique<PacketManager>();
+	__LoadPacketHeaders();
 }
 
 bool Client::Initialize(const char* c_szAddr, int port)
@@ -40,30 +41,22 @@ bool Client::Initialize(const char* c_szAddr, int port)
     return true;
 }
 
+void Client::__LoadPacketHeaders()
+{
+	m_packetHeader->Set(PacketGCHeader::HEADER_GC_RESPONSE, PacketManager::TPacketType(sizeof(TPacketGCResponse), &Client::TestRecv));
+}
+
 void Client::Process()
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{
-		Net::CAbstractPacketHeaderMap::TPacketType packetType;
+		PacketManager::TPacketType packetType;
 		if (m_packetHeader->Get(packet->data[0], &packetType))
 		{
 			if (packet->length == packetType.iPacketSize)
-			{
-				switch (packet->data[0])
-				{
-					case PacketGCHeader::HEADER_GC_RESPONSE:
-						std::cout << "HEADER_GC_RESPONSE" << std::endl;
-						break;
-
-					default:
-						std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-						CNetDevice::peer->CloseConnection(packet->systemAddress, true);
-				}
-			}
+				(this->*packetType.packetHandler)(packet);
 			else
-			{
 				std::cout << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
-			}
 		}
 		else
 		{
@@ -116,4 +109,21 @@ void Client::TestSend()
 	SLNet::BitStream bsOut(sizeof(packet));
 	bsOut.Write((char*)&packet, sizeof(packet));
 	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+
+bool Client::TestRecv(SLNet::Packet* packet)
+{
+	if (!packet)
+		return false;
+
+	TPacketGCResponse response;
+	if (packet->length != sizeof(response))
+		return false;
+
+	SLNet::BitStream bsIn(packet->data, packet->length, false);
+	bsIn.Read((char*)&response, sizeof(response));
+
+	std::cout << "HEADER_GC_RESPONSE" << std::endl;
+
+	return true;
 }
