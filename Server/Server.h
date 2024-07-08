@@ -1,11 +1,12 @@
 #pragma once
 
 #include <slikenet/types.h>
+#include "ServerPacketHeaderMap.h"
 
 class Server
 {
 	public:
-		Server() = default;
+		Server();
 		~Server() = default;
 
 		bool Initialize(const char* c_szAddr, int port);
@@ -13,4 +14,7 @@ class Server
 
 		bool TestRecv(SLNet::Packet* packet);
 		bool TestSend(SLNet::Packet* packet);
+
+	private:
+		std::unique_ptr<CServerPacketHeaderMap> m_packetHeader;
 };

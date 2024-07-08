@@ -5,9 +5,11 @@
     <ClInclude Include="NetDevice.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="PacketDefinition.h" />
+    <ClInclude Include="AbstractPacketHeaderMap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StdAfx.cpp" />
     <ClCompile Include="NetDevice.cpp" />
+    <ClCompile Include="AbstractPacketHeaderMap.cpp" />
   </ItemGroup>
 </Project>

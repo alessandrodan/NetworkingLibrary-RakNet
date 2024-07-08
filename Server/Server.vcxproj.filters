@@ -24,12 +24,18 @@
     <ClCompile Include="StdAfx.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="ServerPacketHeaderMap.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="StdAfx.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerPacketHeaderMap.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

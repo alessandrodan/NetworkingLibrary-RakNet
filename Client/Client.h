@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ClientPacketHeaderMap.h"
+
 class Client
 {
 	public:
@@ -15,4 +17,5 @@ class Client
 
 	private:
 		bool isConnected;
+		std::unique_ptr<CClientPacketHeaderMap> m_packetHeader;
 };

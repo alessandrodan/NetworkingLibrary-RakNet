@@ -10,6 +10,11 @@
 
 using namespace Net;
 
+Server::Server()
+{
+	m_packetHeader = std::make_unique<CServerPacketHeaderMap>();
+}
+
 bool Server::Initialize(const char* c_szAddr, int port)
 {
 	SLNet::SocketDescriptor socketDescriptor;
@@ -40,30 +45,50 @@ void Server::Process()
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{
-		switch (packet->data[0])
+		Net::CAbstractPacketHeaderMap::TPacketType packetType;
+		if (m_packetHeader->Get(packet->data[0], &packetType))
 		{
-			case ID_NEW_INCOMING_CONNECTION:
-				std::cout << "New incoming connection: " << packet->systemAddress.ToString() << std::endl;
-				break;
-
-			case ID_DISCONNECTION_NOTIFICATION:
-				std::cout << "Client Disconnected: " << packet->systemAddress.ToString() << std::endl;
-				break;
-
-			case ID_CONNECTION_LOST:
-				std::cout << "Client Connection lost: " << packet->systemAddress.ToString() << std::endl;
-				break;
-
-			case PacketHeader::HEADER_ACTION1:
+			if (packet->length == packetType.iPacketSize)
 			{
-				TestRecv(packet);
-				TestSend(packet);
-				break;
-			}
+				switch (packet->data[0])
+				{
+					case PacketCGHeader::HEADER_CG_ACTION1:
+					{
+						TestRecv(packet);
+						TestSend(packet);
+						break;
+					}
 
-			default:
-				std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-				CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+					default:
+						std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+						CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+				}
+			}
+			else
+			{
+				std::cout << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
+			}
+		}
+		else
+		{
+			switch (packet->data[0])
+			{
+				case ID_NEW_INCOMING_CONNECTION:
+					std::cout << "New incoming connection: " << packet->systemAddress.ToString() << std::endl;
+					break;
+
+				case ID_DISCONNECTION_NOTIFICATION:
+					std::cout << "Client Disconnected: " << packet->systemAddress.ToString() << std::endl;
+					break;
+
+				case ID_CONNECTION_LOST:
+					std::cout << "Client Connection lost: " << packet->systemAddress.ToString() << std::endl;
+					break;
+
+				default:
+					std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+					CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+			}
 		}
 	}
 }
@@ -73,21 +98,21 @@ bool Server::TestRecv(SLNet::Packet* packet)
 	if (!packet)
 		return false;
 
-	TPacketAction1 action1;
+	TPacketCGAction1 action1;
 	if (packet->length != sizeof(action1))
 		return false;
 
 	SLNet::BitStream bsIn(packet->data, packet->length, false);
 	bsIn.Read((char*)&action1, sizeof(action1));
 
-	std::cout << "HEADER_ACTION1 receved. num = " << action1.numIntero << std::endl;
+	std::cout << "HEADER_CG_ACTION1 receved. num = " << action1.numIntero << std::endl;
 
 	return true;
 }
 
 bool Server::TestSend(SLNet::Packet* packet)
 {
-	TPacketResponse response;
+	TPacketGCResponse response;
 
 	SLNet::BitStream bsOut(sizeof(response));
 	bsOut.Write((char*)&response, sizeof(response));

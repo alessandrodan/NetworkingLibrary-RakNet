@@ -13,6 +13,7 @@ using namespace Net;
 Client::Client()
 {
 	isConnected = false;
+	m_packetHeader = std::make_unique<CClientPacketHeaderMap>();
 }
 
 bool Client::Initialize(const char* c_szAddr, int port)
@@ -43,41 +44,61 @@ void Client::Process()
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{
-		switch (packet->data[0])
+		Net::CAbstractPacketHeaderMap::TPacketType packetType;
+		if (m_packetHeader->Get(packet->data[0], &packetType))
 		{
-			case ID_CONNECTION_REQUEST_ACCEPTED:
-				std::cout <<  "Our connection request has been accepted" << std::endl;
-				isConnected = true;
-				break;
+			if (packet->length == packetType.iPacketSize)
+			{
+				switch (packet->data[0])
+				{
+					case PacketGCHeader::HEADER_GC_RESPONSE:
+						std::cout << "HEADER_GC_RESPONSE" << std::endl;
+						break;
 
-			case ID_CONNECTION_ATTEMPT_FAILED:
-				std::cout << "Our connection request has been FAILED" << std::endl;
-				isConnected = false;
-				break;
+					default:
+						std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+						CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+				}
+			}
+			else
+			{
+				std::cout << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
+			}
+		}
+		else
+		{
+			switch (packet->data[0])
+			{
+				case ID_CONNECTION_REQUEST_ACCEPTED:
+					std::cout << "Our connection request has been accepted" << std::endl;
+					isConnected = true;
+					break;
 
-			case ID_DISCONNECTION_NOTIFICATION:
-				std::cout << "Server Remote Disconnected" << std::endl;
-				break;
+				case ID_CONNECTION_ATTEMPT_FAILED:
+					std::cout << "Our connection request has been FAILED" << std::endl;
+					isConnected = false;
+					break;
 
-			case ID_REMOTE_DISCONNECTION_NOTIFICATION:
-				std::cout << "Server Disconnected" << std::endl;
-				break;
+				case ID_DISCONNECTION_NOTIFICATION:
+					std::cout << "Server Remote Disconnected" << std::endl;
+					break;
 
-			case ID_CONNECTION_LOST:
-				std::cout << "Server Connection lost" << std::endl;
-				break;
+				case ID_REMOTE_DISCONNECTION_NOTIFICATION:
+					std::cout << "Server Disconnected" << std::endl;
+					break;
 
-			case ID_REMOTE_CONNECTION_LOST:
-				std::cout << "Server Connection Remote lost" << std::endl;
-				break;
+				case ID_CONNECTION_LOST:
+					std::cout << "Server Connection lost" << std::endl;
+					break;
 
-			case HEADER_RESPONSE:
-				std::cout << "HEADER_RESPONSE" << std::endl;
-				break;
+				case ID_REMOTE_CONNECTION_LOST:
+					std::cout << "Server Connection Remote lost" << std::endl;
+					break;
 
-			default:
-				std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-				CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+				default:
+					std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+					CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+			}
 		}
 	}
 }
@@ -89,7 +110,7 @@ bool Client::IsConnected()
 
 void Client::TestSend()
 {
-	TPacketAction1 packet;
+	TPacketCGAction1 packet;
 	packet.numIntero = 5;
 
 	SLNet::BitStream bsOut(sizeof(packet));

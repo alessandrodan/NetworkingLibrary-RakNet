@@ -8,22 +8,26 @@ namespace Net
 {
 	typedef SLNet::MessageID TPacketHeader;
 
-	enum PacketHeader : TPacketHeader
+	enum PacketCGHeader : TPacketHeader
 	{
-		HEADER_ACTION1 = ID_USER_PACKET_ENUM,
-		HEADER_RESPONSE,
+		HEADER_CG_ACTION1 = ID_USER_PACKET_ENUM,
+	};
+
+	enum PacketGCHeader : TPacketHeader
+	{
+		HEADER_GC_RESPONSE = ID_USER_PACKET_ENUM,
 	};
 
 #pragma pack(push, 1)
-	struct TPacketAction1
+	struct TPacketCGAction1
 	{
-		PacketHeader header = PacketHeader::HEADER_ACTION1;
+		PacketCGHeader header = PacketCGHeader::HEADER_CG_ACTION1;
 		uint32_t numIntero;
 	};
 
-	struct TPacketResponse
+	struct TPacketGCResponse
 	{
-		PacketHeader header = PacketHeader::HEADER_RESPONSE;
+		PacketGCHeader header = PacketGCHeader::HEADER_GC_RESPONSE;
 	};
 #pragma pack(pop)
 }
