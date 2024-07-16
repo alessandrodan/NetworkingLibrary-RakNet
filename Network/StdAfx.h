@@ -5,6 +5,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#pragma comment( lib, "SLikeNet_LibStatic_Debug_x64.lib" )
+#include <slikenet-link.h>
 
 #pragma warning(disable: 26812)

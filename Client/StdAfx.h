@@ -5,4 +5,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#include <slikenet-link.h>
+
 #pragma warning(disable: 26812)
