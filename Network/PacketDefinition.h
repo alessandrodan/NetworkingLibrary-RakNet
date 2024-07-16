@@ -10,7 +10,8 @@ namespace Net
 
 	enum PacketCGHeader : TPacketHeader
 	{
-		HEADER_CG_ACTION1 = ID_USER_PACKET_ENUM,
+		HEADER_CG_AUTH_REQUEST = ID_USER_PACKET_ENUM,
+		HEADER_CG_ACTION1,
 	};
 
 	enum PacketGCHeader : TPacketHeader
@@ -19,6 +20,13 @@ namespace Net
 	};
 
 #pragma pack(push, 1)
+	struct TPacketCGAuthRequest
+	{
+		PacketCGHeader header = PacketCGHeader::HEADER_CG_AUTH_REQUEST;
+		char username[50];
+		char password[50];
+	};
+
 	struct TPacketCGAction1
 	{
 		PacketCGHeader header = PacketCGHeader::HEADER_CG_ACTION1;

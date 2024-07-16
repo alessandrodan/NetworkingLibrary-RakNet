@@ -1,7 +1,7 @@
 #include <iostream>
 #include <conio.h>
 #include <Network/NetDevice.h>
-#include "Server.h"
+#include "ServerGame.h"
 
 int main()
 {
@@ -12,7 +12,7 @@ int main()
 		return 0;
 	}
 
-	Server server;
+	ServerGame server;
 	if (server.Initialize("localhost", 8080))
 	{
 		while (true)

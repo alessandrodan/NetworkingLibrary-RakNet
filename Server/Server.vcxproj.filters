@@ -18,18 +18,24 @@
     <ClCompile Include="Main.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="Server.cpp">
+    <ClCompile Include="ServerGame.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="StdAfx.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="ServerAuth.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Server.h">
+    <ClInclude Include="ServerGame.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="StdAfx.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerAuth.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

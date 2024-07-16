@@ -5,18 +5,18 @@
 #include <slikenet/BitStream.h>
 #include <Network/NetDevice.cpp>
 #include <Network/Definition.h>
-#include "Server.h"
+#include "ServerGame.h"
 #include <Network/PacketDefinition.h>
 
 using namespace Net;
 
-Server::Server()
+ServerGame::ServerGame()
 {
 	m_packetHeader = std::make_unique<PacketManager>();
 	__LoadPacketHeaders();
 }
 
-bool Server::Initialize(const char* c_szAddr, int port)
+bool ServerGame::Initialize(const char* c_szAddr, int port)
 {
 	SLNet::SocketDescriptor socketDescriptor;
 	strcpy(socketDescriptor.hostAddress, c_szAddr);
@@ -42,12 +42,12 @@ bool Server::Initialize(const char* c_szAddr, int port)
     return true;
 }
 
-void Server::__LoadPacketHeaders()
+void ServerGame::__LoadPacketHeaders()
 {
-	m_packetHeader->Set(PacketCGHeader::HEADER_CG_ACTION1, PacketManager::TPacketType(sizeof(TPacketCGAction1), &Server::TestRecv));
+	m_packetHeader->Set(PacketCGHeader::HEADER_CG_ACTION1, PacketManager::TPacketType(sizeof(TPacketCGAction1), &ServerGame::TestRecv));
 }
 
-void Server::Process()
+void ServerGame::Process()
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{
@@ -83,7 +83,7 @@ void Server::Process()
 	}
 }
 
-bool Server::TestRecv(SLNet::Packet* packet)
+bool ServerGame::TestRecv(SLNet::Packet* packet)
 {
 	if (!packet)
 		return false;
@@ -101,7 +101,7 @@ bool Server::TestRecv(SLNet::Packet* packet)
 	return true;
 }
 
-bool Server::TestSend(SLNet::Packet* packet)
+bool ServerGame::TestSend(SLNet::Packet* packet)
 {
 	TPacketGCResponse response;
 

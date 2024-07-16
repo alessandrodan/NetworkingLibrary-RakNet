@@ -4,11 +4,11 @@
 #include <Network/AbstractEntity.h>
 #include <Network/PacketManager.hpp>
 
-class Server : public Net::CAbstractEntity
+class ServerGame : public Net::CAbstractEntity
 {
 	public:
-		Server();
-		~Server() = default;
+		ServerGame();
+		~ServerGame() = default;
 
 		bool Initialize(const char* c_szAddr, int port) override;
 		void Process() override;
@@ -21,6 +21,6 @@ class Server : public Net::CAbstractEntity
 		bool TestSend(SLNet::Packet* packet);
 
 	private:
-		using PacketManager = Net::CPacketManager<Server>;
+		using PacketManager = Net::CPacketManager<ServerGame>;
 		std::unique_ptr<PacketManager> m_packetHeader;
 };
