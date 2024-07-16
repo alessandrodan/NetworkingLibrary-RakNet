@@ -3,7 +3,7 @@
 #include <slikenet/types.h>
 #include <slikenet/BitStream.h>
 #include <slikenet/MessageIdentifiers.h>
-#include <Network/NetDevice.cpp>
+#include <Network/NetDevice.h>
 #include "Client.h"
 #include <Network/Definition.h>
 #include <Network/PacketDefinition.h>

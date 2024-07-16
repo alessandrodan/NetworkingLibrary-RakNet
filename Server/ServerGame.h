@@ -2,15 +2,15 @@
 
 #include <slikenet/types.h>
 #include <Network/AbstractEntity.h>
+#include <Network/AbstractPacketHandler.h>
 #include <Network/PacketManager.hpp>
 
-class ServerGame : public Net::CAbstractEntity
+class ServerGame : Net::CAbstractPacketHandler
 {
 	public:
 		ServerGame();
 		~ServerGame() = default;
 
-		bool Initialize(const char* c_szAddr, int port) override;
 		void Process() override;
 
 	protected:

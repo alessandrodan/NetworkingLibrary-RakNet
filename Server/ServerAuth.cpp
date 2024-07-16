@@ -13,11 +13,6 @@ ServerAuth::ServerAuth()
 	__LoadPacketHeaders();
 }
 
-bool ServerAuth::Initialize(const char* c_szAddr, int port)
-{
-	return false;
-}
-
 void ServerAuth::Process()
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())

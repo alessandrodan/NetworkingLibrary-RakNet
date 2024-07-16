@@ -1,9 +1,10 @@
 #pragma once
 
 #include <Network/AbstractEntity.h>
+#include <Network/AbstractPacketHandler.h>
 #include <Network/PacketManager.hpp>
 
-class Client : public Net::CAbstractEntity
+class Client : public Net::CAbstractEntity, Net::CAbstractPacketHandler
 {
 	public:
 		Client();
