@@ -2,6 +2,7 @@
 
 #include <Network/AbstractEntity.h>
 #include <Network/AbstractPacketHandler.h>
+#include "PeerManager.h"
 
 class ServerMain : public Net::CAbstractEntity, Net::CAbstractPacketHandler
 {
@@ -14,4 +15,7 @@ class ServerMain : public Net::CAbstractEntity, Net::CAbstractPacketHandler
 
 	protected:
 		void __LoadPacketHeaders() override;
+
+	private:
+		std::unique_ptr<CPeerManager> m_peerManager;
 };

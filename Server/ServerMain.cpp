@@ -31,6 +31,7 @@ bool ServerMain::Initialize(const char* c_szAddr, int port)
 	CNetDevice::peer->SetOccasionalPing(true);
 	CNetDevice::peer->SetUnreliableTimeout(1000);
 
+	m_peerManager = std::make_unique<CPeerManager>();
 	std::cout << "Socket Listening..." << std::endl;
 
 	return true;
@@ -43,6 +44,7 @@ void ServerMain::Process()
 		switch (packet->data[0])
 		{
 			case ID_NEW_INCOMING_CONNECTION:
+				m_peerManager->AcceptPeer(packet->guid);
 				std::cout << "New incoming connection: " << packet->systemAddress.ToString() << std::endl;
 				break;
 
