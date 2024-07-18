@@ -28,6 +28,6 @@ class Client : public Net::CAbstractEntity, Net::CAbstractPacketClientHandler
 	private:
 		bool isConnected;
 
-		using PacketManager = Net::CPacketManager<Client>;
+		using PacketManager = Net::CPacketManagerClient<Client>;
 		std::unique_ptr<PacketManager> m_packetHeader;
 };

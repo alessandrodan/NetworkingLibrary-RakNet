@@ -16,10 +16,10 @@ class ServerAuth : public Net::CAbstractPacketServerHandler
 		void __LoadPacketHeaders() override;
 
 	private:
-		using PacketManager = Net::CPacketManager<ServerAuth>;
+		using PacketManager = Net::CPacketManagerServer<ServerAuth>;
 		std::unique_ptr<PacketManager> m_packetHeader;
 
 	public:
-		bool TestRecv(SLNet::Packet* packet);
+		bool TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer);
 
 };

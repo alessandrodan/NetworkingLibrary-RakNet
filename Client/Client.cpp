@@ -43,19 +43,19 @@ bool Client::Initialize(const char* c_szAddr, int port)
 
 void Client::__LoadPacketHeaders()
 {
-	m_packetHeader->Set(PacketGCHeader::HEADER_GC_HANDSHAKE, PacketManager::TPacketType(sizeof(TPacketGCHandshake), &Client::RecvHandshake));
-	m_packetHeader->Set(PacketGCHeader::HEADER_GC_RESPONSE, PacketManager::TPacketType(sizeof(TPacketGCResponse), &Client::TestRecv));
+	m_packetHeader->Set(PacketGCHeader::HEADER_GC_HANDSHAKE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCHandshake), &Client::RecvHandshake));
+	m_packetHeader->Set(PacketGCHeader::HEADER_GC_RESPONSE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCResponse), &Client::TestRecv));
 }
 
 void Client::Process()
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{
-		PacketManager::TPacketType packetType;
-		if (m_packetHeader->Get(packet->data[0], &packetType))
+		CPacketManagerBase<Client>::TPacketType* packetType;
+		if (m_packetHeader->Get(packet->data[0], packetType))
 		{
-			if (packet->length == packetType.iPacketSize)
-				(this->*packetType.packetHandler)(packet);
+			if (packet->length == packetType->iPacketSize)
+				packetType->Handle(this, packet, nullptr);
 			else
 				std::cout << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
 		}

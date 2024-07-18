@@ -17,10 +17,10 @@ class ServerGame : Net::CAbstractPacketServerHandler
 		void __LoadPacketHeaders() override;
 
 	public:
-		bool TestRecv(SLNet::Packet* packet);
+		bool TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer);
 		bool TestSend(SLNet::Packet* packet);
 
 	private:
-		using PacketManager = Net::CPacketManager<ServerGame>;
+		using PacketManager = Net::CPacketManagerServer<ServerGame>;
 		std::unique_ptr<PacketManager> m_packetHeader;
 };

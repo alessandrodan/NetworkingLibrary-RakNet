@@ -18,30 +18,33 @@ ServerGame::ServerGame()
 
 void ServerGame::__LoadPacketHeaders()
 {
-	m_packetHeader->Set(PacketCGHeader::HEADER_CG_ACTION1, PacketManager::TPacketType(sizeof(TPacketCGAction1), &ServerGame::TestRecv));
+	m_packetHeader->Set(PacketCGHeader::HEADER_CG_ACTION1, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketCGAction1), &ServerGame::TestRecv));
 }
 
 void ServerGame::Process(Net::CAbstractPeer* peer, SLNet::Packet* packet)
 {
-	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
+	CPacketManagerBase<ServerGame>::TPacketType* packetType;
+	if (m_packetHeader->Get(packet->data[0], packetType))
 	{
-		PacketManager::TPacketType packetType;
-		if (m_packetHeader->Get(packet->data[0], &packetType))
+		if (packet->length == packetType->iPacketSize)
 		{
-			if (packet->length == packetType.iPacketSize)
-				(this->*packetType.packetHandler)(packet);
-			else
-				std::cout << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
+			if (!packetType->Handle(this, packet, peer))
+			{
+				std::cerr << "Failed to handle packet with header " << (unsigned)packet->data[0] << std::endl;
+				//peer->SetPhase(PHASE_CLOSE);
+			}
 		}
 		else
-		{
-			std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-			CNetDevice::peer->CloseConnection(packet->systemAddress, true);
-		}
+			std::cerr << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
+	}
+	else
+	{
+		std::cerr << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+		//peer->SetPhase(PHASE_CLOSE);
 	}
 }
 
-bool ServerGame::TestRecv(SLNet::Packet* packet)
+bool ServerGame::TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 {
 	if (!packet)
 		return false;
