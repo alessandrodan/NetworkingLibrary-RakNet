@@ -21,7 +21,7 @@ void ServerGame::__LoadPacketHeaders()
 	m_packetHeader->Set(PacketCGHeader::HEADER_CG_ACTION1, PacketManager::TPacketType(sizeof(TPacketCGAction1), &ServerGame::TestRecv));
 }
 
-void ServerGame::Process()
+void ServerGame::Process(Net::CAbstractPeer* peer, SLNet::Packet* packet)
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{

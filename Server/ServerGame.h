@@ -2,16 +2,16 @@
 
 #include <slikenet/types.h>
 #include <Network/AbstractEntity.h>
-#include <Network/AbstractPacketHandler.h>
+#include <Network/AbstractPacketServerHandler.h>
 #include <Network/PacketManager.hpp>
 
-class ServerGame : Net::CAbstractPacketHandler
+class ServerGame : Net::CAbstractPacketServerHandler
 {
 	public:
 		ServerGame();
 		~ServerGame() = default;
 
-		void Process() override;
+		void Process(Net::CAbstractPeer* peer, SLNet::Packet* packet) override;
 
 	protected:
 		void __LoadPacketHeaders() override;

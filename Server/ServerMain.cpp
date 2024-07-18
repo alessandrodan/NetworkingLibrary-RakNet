@@ -36,7 +36,7 @@ bool ServerMain::Initialize(const char* c_szAddr, int port)
 	return true;
 }
 
-void ServerMain::Process()
+void ServerMain::ProcessNet()
 {
 	m_peerManager->DestroyClosed();
 
@@ -75,15 +75,17 @@ void ServerMain::Process()
 
 			default:
 			{
-				std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-				CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+				const auto peer = m_peerManager->GetPeer(packet->guid);
+				if (!peer)
+					return;
+
+				peer->ProcessRecv(packet);
+
+				//std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+				//CNetDevice::peer->CloseConnection(packet->systemAddress, true);
 			}
 		}
 	}
-}
-
-void ServerMain::__LoadPacketHeaders()
-{
 }
 
 void ServerMain::DisconnectAll()

@@ -17,7 +17,7 @@ int main()
 	{
 		while (true)
 		{
-			server.Process();
+			server.ProcessNet();
 
 			if (_kbhit())
 			{

@@ -1,16 +1,16 @@
 #pragma once
 
-#include <Network/AbstractPacketHandler.h>
+#include <Network/AbstractPacketServerHandler.h>
 #include <Network/PacketManager.hpp>
 #include <memory>
 
-class ServerHandshake : public Net::CAbstractPacketHandler
+class ServerHandshake : public Net::CAbstractPacketServerHandler
 {
 	public:
 		ServerHandshake();
 		~ServerHandshake() = default;
 
-		void Process() override;
+		void Process(Net::CAbstractPeer* peer, SLNet::Packet* packet) override;
 
 	protected:
 		void __LoadPacketHeaders() override;

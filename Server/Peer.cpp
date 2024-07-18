@@ -73,9 +73,9 @@ void CPeer::Setup(SLNet::RakNetGUID guid, int handleCount, uint32_t handshake)
 	m_guid = guid;
 	m_dwHandle = handleCount;
 
-	StartHandshake(handshake);
-
 	SetPhase(PHASE_HANDSHAKE);
+
+	StartHandshake(handshake);
 }
 
 void CPeer::StartHandshake(uint32_t handshake)
@@ -107,14 +107,14 @@ void CPeer::Packet(const void* c_pvData, int iSize)
 		return;
 
 	SLNet::BitStream bsOut(iSize);
-	bsOut.Write((char*)&c_pvData, iSize);
+	bsOut.Write((const char*)c_pvData, iSize);
 
 	Net::CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_guid, false);
 }
 
-void CPeer::ProcessRecv()
+void CPeer::ProcessRecv(SLNet::Packet* packet)
 {
-	m_packetHandler->Process();
+	m_packetHandler->Process(this, packet);
 }
 
 void CPeer::SetPhase(int phase)

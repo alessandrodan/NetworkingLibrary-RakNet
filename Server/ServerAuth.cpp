@@ -13,7 +13,7 @@ ServerAuth::ServerAuth()
 	__LoadPacketHeaders();
 }
 
-void ServerAuth::Process()
+void ServerAuth::Process(Net::CAbstractPeer* peer, SLNet::Packet* packet)
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{

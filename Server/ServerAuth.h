@@ -1,16 +1,16 @@
 #pragma once
 
-#include <Network/AbstractPacketHandler.h>
+#include <Network/AbstractPacketServerHandler.h>
 #include <Network/PacketManager.hpp>
 #include <memory>
 
-class ServerAuth : public Net::CAbstractPacketHandler
+class ServerAuth : public Net::CAbstractPacketServerHandler
 {
 	public:
 		ServerAuth();
 		~ServerAuth() = default;
 
-		void Process() override;
+		void Process(Net::CAbstractPeer* peer, SLNet::Packet* packet) override;
 
 	protected:
 		void __LoadPacketHeaders() override;

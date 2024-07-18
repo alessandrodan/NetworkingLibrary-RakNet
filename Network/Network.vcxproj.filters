@@ -8,6 +8,9 @@
     <ClInclude Include="AbstractEntity.h" />
     <ClInclude Include="PacketManager.hpp" />
     <ClInclude Include="AbstractPacketHandler.h" />
+    <ClInclude Include="AbstractPacketServerHandler.h" />
+    <ClInclude Include="AbstractPacketClientHandler.h" />
+    <ClInclude Include="AbstractPeer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StdAfx.cpp" />

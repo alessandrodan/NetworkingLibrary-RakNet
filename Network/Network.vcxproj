@@ -20,7 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractEntity.h" />
+    <ClInclude Include="AbstractPacketClientHandler.h" />
     <ClInclude Include="AbstractPacketHandler.h" />
+    <ClInclude Include="AbstractPacketServerHandler.h" />
+    <ClInclude Include="AbstractPeer.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="NetDevice.h" />
     <ClInclude Include="PacketDefinition.h" />

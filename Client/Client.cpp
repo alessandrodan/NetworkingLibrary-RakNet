@@ -97,6 +97,11 @@ void Client::Process()
 	}
 }
 
+void Client::ProcessNet()
+{
+	// not used for now
+}
+
 bool Client::IsConnected()
 {
 	return isConnected;
