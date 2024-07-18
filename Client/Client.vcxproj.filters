@@ -32,5 +32,8 @@
     <ClInclude Include="StdAfx.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="Packet.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

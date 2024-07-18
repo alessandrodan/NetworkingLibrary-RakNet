@@ -186,6 +186,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Packet.h" />
     <ClInclude Include="Peer.h" />
     <ClInclude Include="PeerManager.h" />
     <ClInclude Include="ServerGame.h" />

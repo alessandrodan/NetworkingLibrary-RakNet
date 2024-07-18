@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "ServerAuth.h"
-#include <Network/PacketDefinition.h>
+#include "Packet.h"
 #include <slikenet/BitStream.h>
 #include <iostream>
 #include <Network/NetDevice.h>

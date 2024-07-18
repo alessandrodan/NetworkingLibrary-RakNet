@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "ServerHandshake.h"
-#include <Network/PacketDefinition.h>
+#include "Packet.h"
 #include <slikenet/BitStream.h>
 #include <iostream>
 #include <Network/NetDevice.h>
