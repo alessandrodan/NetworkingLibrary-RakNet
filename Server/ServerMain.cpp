@@ -39,30 +39,66 @@ bool ServerMain::Initialize(const char* c_szAddr, int port)
 
 void ServerMain::Process()
 {
+	m_peerManager->DestroyClosed();
+
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{
 		switch (packet->data[0])
 		{
 			case ID_NEW_INCOMING_CONNECTION:
+			{
 				m_peerManager->AcceptPeer(packet->guid);
 				std::cout << "New incoming connection: " << packet->systemAddress.ToString() << std::endl;
-				break;
+			}
+			break;
 
 			case ID_DISCONNECTION_NOTIFICATION:
+			{
+				const auto peer = m_peerManager->GetPeer(packet->guid);
+				if (!peer)
+					return;
+
+				peer->SetPhase(PHASE_CLOSE);
 				std::cout << "Client Disconnected: " << packet->systemAddress.ToString() << std::endl;
-				break;
+			}
+			break;
 
 			case ID_CONNECTION_LOST:
+			{
+				const auto peer = m_peerManager->GetPeer(packet->guid);
+				if (!peer)
+					return;
+
+				peer->SetPhase(PHASE_CLOSE);
 				std::cout << "Client Connection lost: " << packet->systemAddress.ToString() << std::endl;
-				break;
+			}
+			break;
 
 			default:
+			{
 				std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
 				CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+			}
 		}
 	}
 }
 
 void ServerMain::__LoadPacketHeaders()
 {
+}
+
+void ServerMain::DisconnectAll()
+{
+	if (m_peerManager)
+		m_peerManager->Destroy();
+}
+
+void ServerMain::DisconnectFirstPeer()
+{
+	if (m_peerManager)
+	{
+		auto firstPeer = m_peerManager->GetFirstPeer();
+		if (firstPeer)
+			m_peerManager->DestroyDesc(firstPeer.get());
+	}
 }

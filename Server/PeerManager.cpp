@@ -3,6 +3,7 @@
 #include <iostream>
 #include <Network/NetDevice.h>
 #include <Network/Definition.h>
+#include <vector>
 
 using namespace Net;
 
@@ -10,9 +11,67 @@ CPeerManager::CPeerManager()
 {
     m_iPeerConnected = 0;
     m_iHandleCount = 0;
+    m_bDestroyed = false;
 
     m_map_handshake.clear();
     m_mapPeer.clear();
+}
+
+CPeerManager::~CPeerManager()
+{
+    Destroy();
+}
+
+void CPeerManager::Destroy()
+{
+    if (m_bDestroyed)
+        return;
+
+    m_bDestroyed = true;
+
+    for (const auto& peer : m_mapPeer)
+    {
+        auto d = peer.second;
+        DestroyDesc(d.get(), true);
+    }
+
+    m_mapPeer.clear();
+    m_map_handshake.clear();
+}
+
+void CPeerManager::DestroyClosed()
+{
+    std::vector<SLNet::RakNetGUID> toErase;
+    for (const auto& peer : m_mapPeer)
+    {
+        auto d = peer.second;
+        if (d->IsPhase(PHASE_CLOSE))
+            toErase.push_back(peer.first);
+    }
+
+    for (const auto& guid : toErase)
+    {
+        auto it = m_mapPeer.find(guid);
+        if (it != m_mapPeer.end())
+            DestroyDesc(it->second.get());
+    }
+}
+
+void CPeerManager::DestroyDesc(CPeer* d, bool skipMapErase)
+{
+    if (!d)
+        return;
+
+    if (!skipMapErase)
+    {
+        if (d->GetHandshake())
+            m_map_handshake.erase(d->GetHandshake());
+
+        if (d->GetGUID() != SLNet::UNASSIGNED_RAKNET_GUID)
+            m_mapPeer.erase(d->GetGUID());
+    }
+
+    --m_iPeerConnected;
 }
 
 void CPeerManager::AcceptPeer(SLNet::RakNetGUID guid)
@@ -41,6 +100,14 @@ std::shared_ptr<CPeer> CPeerManager::GetPeer(SLNet::RakNetGUID guid)
         return nullptr;
 
     return it->second;
+}
+
+std::shared_ptr<CPeer> CPeerManager::GetFirstPeer()
+{
+    if (m_mapPeer.empty())
+        return nullptr;
+
+    return m_mapPeer.begin()->second;
 }
 
 uint32_t thecore_random()

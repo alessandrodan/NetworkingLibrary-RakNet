@@ -16,6 +16,10 @@ class ServerMain : public Net::CAbstractEntity, Net::CAbstractPacketHandler
 	protected:
 		void __LoadPacketHeaders() override;
 
+	public:
+		void DisconnectAll();
+		void DisconnectFirstPeer();
+
 	private:
 		std::unique_ptr<CPeerManager> m_peerManager;
 };
