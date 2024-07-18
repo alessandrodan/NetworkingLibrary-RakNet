@@ -15,8 +15,11 @@ class CPeer
 		void Setup(SLNet::RakNetGUID guid, int handleCount, uint32_t handshake);
 		void StartHandshake(uint32_t handshake);
 
+		void SendHandshake(uint32_t dwCurTime, long lNewDelta);
+
 		void SetPhase(int phase);
 
+		void Packet(const void* c_pvData, int iSize);
 		void ProcessRecv();
 
 		uint32_t GetHandshake() const { return m_dwHandshake; }

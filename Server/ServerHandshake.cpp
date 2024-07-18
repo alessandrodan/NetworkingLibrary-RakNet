@@ -20,5 +20,11 @@ void ServerHandshake::Process()
 
 void ServerHandshake::__LoadPacketHeaders()
 {
+	m_packetHeader->Set(PacketCGHeader::HEADER_CG_HANDSHAKE, PacketManager::TPacketType(sizeof(TPacketCGHandshake), &ServerHandshake::RecvHandshake));
+}
 
+bool ServerHandshake::RecvHandshake(SLNet::Packet* packet)
+{
+	// TODO
+	return true;
 }

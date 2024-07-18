@@ -43,6 +43,7 @@ bool Client::Initialize(const char* c_szAddr, int port)
 
 void Client::__LoadPacketHeaders()
 {
+	m_packetHeader->Set(PacketGCHeader::HEADER_GC_HANDSHAKE, PacketManager::TPacketType(sizeof(TPacketGCHandshake), &Client::RecvHandshake));
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_RESPONSE, PacketManager::TPacketType(sizeof(TPacketGCResponse), &Client::TestRecv));
 }
 
@@ -101,6 +102,20 @@ bool Client::IsConnected()
 	return isConnected;
 }
 
+void Client::SendHandshake(uint32_t dwHandshake, uint32_t dwTime, long lDelta)
+{
+	TPacketCGHandshake packet;
+
+	packet.bHeader = HEADER_CG_HANDSHAKE;
+	packet.dwHandshake = dwHandshake;
+	packet.dwTime = dwTime;
+	packet.lDelta = lDelta;
+
+	SLNet::BitStream bsOut(sizeof(packet));
+	bsOut.Write((char*)&packet, sizeof(packet));
+	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+
 void Client::TestSend()
 {
 	TPacketCGAction1 packet;
@@ -109,6 +124,24 @@ void Client::TestSend()
 	SLNet::BitStream bsOut(sizeof(packet));
 	bsOut.Write((char*)&packet, sizeof(packet));
 	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+
+bool Client::RecvHandshake(SLNet::Packet* packet)
+{
+	if (!packet)
+		return false;
+
+	SLNet::BitStream bsIn(packet->data, packet->length, false);
+
+	TPacketGCHandshake handshake;
+	bsIn.Read((char*)&handshake, sizeof(handshake));
+
+	std::cout << "HANDSHAKE RECV" << handshake.dwTime << "\t" << handshake.lDelta << std::endl;
+
+	std::cout << "HANDSHAKE SEND" << std::endl;
+	SendHandshake(handshake.dwHandshake, handshake.dwTime, handshake.lDelta);
+
+	return true;
 }
 
 bool Client::TestRecv(SLNet::Packet* packet)

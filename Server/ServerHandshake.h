@@ -15,6 +15,9 @@ class ServerHandshake : public Net::CAbstractPacketHandler
 	protected:
 		void __LoadPacketHeaders() override;
 
+	public:
+		bool RecvHandshake(SLNet::Packet* packet);
+
 	private:
 		using PacketManager = Net::CPacketManager<ServerHandshake>;
 		std::unique_ptr<PacketManager> m_packetHeader;

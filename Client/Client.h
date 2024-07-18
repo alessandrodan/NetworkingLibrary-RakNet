@@ -19,7 +19,9 @@ class Client : public Net::CAbstractEntity, Net::CAbstractPacketHandler
 	public:
 		bool IsConnected();
 
+		void SendHandshake(uint32_t dwHandshake, uint32_t dwTime, long lDelta);
 		void TestSend();
+		bool RecvHandshake(SLNet::Packet* packet);
 		bool TestRecv(SLNet::Packet* packet);
 
 	private:

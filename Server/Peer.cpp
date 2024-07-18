@@ -3,6 +3,36 @@
 #include "PeerManager.h"
 #include <iostream>
 #include <Network/NetDevice.h>
+#include "Packet.h"
+#include <slikenet/BitStream.h>
+
+void gettimeofday(struct timeval* t, struct timezone* dummy)
+{
+	uint32_t millisec = GetTickCount();
+
+	t->tv_sec = (millisec / 1000);
+	t->tv_usec = (millisec % 1000) * 1000;
+}
+
+static uint32_t get_boot_sec()
+{
+	static struct timeval tv_boot = { 0L, 0L };
+
+	if (tv_boot.tv_sec == 0)
+		gettimeofday(&tv_boot, NULL);
+
+	return tv_boot.tv_sec;
+}
+
+uint32_t get_dword_time()
+{
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	tv.tv_sec -= get_boot_sec();
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+
 
 CPeer::CPeer()
 {
@@ -51,6 +81,35 @@ void CPeer::Setup(SLNet::RakNetGUID guid, int handleCount, uint32_t handshake)
 void CPeer::StartHandshake(uint32_t handshake)
 {
 	m_dwHandshake = handshake;
+	SendHandshake(get_dword_time(), 0);
+}
+
+void CPeer::SendHandshake(uint32_t dwCurTime, long lNewDelta)
+{
+	TPacketGCHandshake pack;
+
+	pack.bHeader = HEADER_GC_HANDSHAKE;
+	pack.dwHandshake = m_dwHandshake;
+	pack.dwTime = dwCurTime;
+	pack.lDelta = lNewDelta;
+
+	Packet(&pack, sizeof(TPacketGCHandshake));
+}
+
+void CPeer::Packet(const void* c_pvData, int iSize)
+{
+	assert(iSize > 0);
+
+	if (m_iPhase == PHASE_CLOSE)
+		return;
+
+	if (m_guid == SLNet::UNASSIGNED_RAKNET_GUID)
+		return;
+
+	SLNet::BitStream bsOut(iSize);
+	bsOut.Write((char*)&c_pvData, iSize);
+
+	Net::CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_guid, false);
 }
 
 void CPeer::ProcessRecv()
