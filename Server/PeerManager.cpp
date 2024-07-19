@@ -42,7 +42,7 @@ void CPeerManager::Destroy()
 
 void CPeerManager::DestroyClosed()
 {
-    std::vector<SLNet::RakNetGUID> toErase;
+    std::vector<uint32_t> toErase;
     for (const auto& peer : m_mapPeer)
     {
         auto d = peer.second;
@@ -69,7 +69,7 @@ void CPeerManager::DestroyDesc(CPeer* d, bool skipMapErase)
             m_setHandshake.erase(d->GetHandshake());
 
         if (d->GetGUID() != SLNet::UNASSIGNED_RAKNET_GUID)
-            m_mapPeer.erase(d->GetGUID());
+            m_mapPeer.erase(d->GetGUID().ToUint32(d->GetGUID()));
     }
 
     --m_iPeerConnected;
@@ -89,14 +89,14 @@ void CPeerManager::AcceptPeer(SLNet::RakNetGUID guid)
     newPeer->Setup(guid, ++m_iHandleCount, handshake);
 
     m_setHandshake.emplace(handshake);
-    m_mapPeer.emplace(guid, newPeer);
+    m_mapPeer.emplace(guid.ToUint32(guid), newPeer);
 
     ++m_iPeerConnected;
 }
 
 std::shared_ptr<CPeer> CPeerManager::GetPeer(SLNet::RakNetGUID guid)
 {
-    const auto it = m_mapPeer.find(guid);
+    const auto it = m_mapPeer.find(guid.ToUint32(guid));
     if (it == m_mapPeer.end())
         return nullptr;
 

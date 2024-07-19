@@ -2,8 +2,8 @@
 
 #include "Peer.h"
 #include <memory>
-#include <map>
 #include <set>
+#include <unordered_map>
 
 class CPeerManager
 {
@@ -28,5 +28,5 @@ class CPeerManager
 		int				m_iHandleCount;
 		bool			m_bDestroyed;
 		std::set<uint32_t> m_setHandshake;
-		std::map<SLNet::RakNetGUID, std::shared_ptr<CPeer>> m_mapPeer;
+		std::unordered_map<uint32_t, std::shared_ptr<CPeer>> m_mapPeer;
 };
