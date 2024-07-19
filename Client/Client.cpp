@@ -47,59 +47,50 @@ void Client::__LoadPacketHeaders()
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_RESPONSE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCResponse), &Client::TestRecv));
 }
 
-void Client::Process()
+void Client::Process(SLNet::Packet* packet)
 {
-	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
-	{
-		CPacketManagerBase<Client>::TPacketType* packetType;
-		if (m_packetHeader->Get(packet->data[0], packetType))
-		{
-			if (packet->length == packetType->iPacketSize)
-				packetType->Handle(this, packet, nullptr);
-			else
-				std::cout << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
-		}
-		else
-		{
-			switch (packet->data[0])
-			{
-				case ID_CONNECTION_REQUEST_ACCEPTED:
-					std::cout << "Our connection request has been accepted" << std::endl;
-					isConnected = true;
-					break;
-
-				case ID_CONNECTION_ATTEMPT_FAILED:
-					std::cout << "Our connection request has been FAILED" << std::endl;
-					isConnected = false;
-					break;
-
-				case ID_DISCONNECTION_NOTIFICATION:
-					std::cout << "Server Remote Disconnected" << std::endl;
-					break;
-
-				case ID_REMOTE_DISCONNECTION_NOTIFICATION:
-					std::cout << "Server Disconnected" << std::endl;
-					break;
-
-				case ID_CONNECTION_LOST:
-					std::cout << "Server Connection lost" << std::endl;
-					break;
-
-				case ID_REMOTE_CONNECTION_LOST:
-					std::cout << "Server Connection Remote lost" << std::endl;
-					break;
-
-				default:
-					std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-					CNetDevice::peer->CloseConnection(packet->systemAddress, true);
-			}
-		}
-	}
+	ProcessPacket(this, *m_packetHeader, packet);
 }
 
 void Client::ProcessNet()
 {
-	// not used for now
+	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
+	{
+		switch (packet->data[0])
+		{
+			case ID_CONNECTION_REQUEST_ACCEPTED:
+				std::cout << "Our connection request has been accepted" << std::endl;
+				isConnected = true;
+				break;
+
+			case ID_CONNECTION_ATTEMPT_FAILED:
+				std::cout << "Our connection request has been FAILED" << std::endl;
+				isConnected = false;
+				break;
+
+			case ID_DISCONNECTION_NOTIFICATION:
+				std::cout << "Server Remote Disconnected" << std::endl;
+				break;
+
+			case ID_REMOTE_DISCONNECTION_NOTIFICATION:
+				std::cout << "Server Disconnected" << std::endl;
+				break;
+
+			case ID_CONNECTION_LOST:
+				std::cout << "Server Connection lost" << std::endl;
+				break;
+
+			case ID_REMOTE_CONNECTION_LOST:
+				std::cout << "Server Connection Remote lost" << std::endl;
+				break;
+
+			default:
+				Process(packet);
+
+				//std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+				//CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+		}
+	}
 }
 
 bool Client::IsConnected()

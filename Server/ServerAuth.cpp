@@ -15,25 +15,7 @@ ServerAuth::ServerAuth()
 
 void ServerAuth::Process(Net::CAbstractPeer* peer, SLNet::Packet* packet)
 {
-	CPacketManagerBase<ServerAuth>::TPacketType* packetType;
-	if (m_packetHeader->Get(packet->data[0], packetType))
-	{
-		if (packet->length == packetType->iPacketSize)
-		{
-			if (!packetType->Handle(this, packet, peer))
-			{
-				std::cerr << "Failed to handle packet with header " << (unsigned)packet->data[0] << std::endl;
-				//peer->SetPhase(PHASE_CLOSE);
-			}
-		}
-		else
-			std::cerr << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
-	}
-	else
-	{
-		std::cerr << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-		//peer->SetPhase(PHASE_CLOSE);
-	}
+	ProcessPacket(this, *m_packetHeader, packet, peer);
 }
 
 void ServerAuth::__LoadPacketHeaders()

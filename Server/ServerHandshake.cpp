@@ -4,6 +4,7 @@
 #include <slikenet/BitStream.h>
 #include <iostream>
 #include <Network/NetDevice.h>
+#include "Peer.h"
 
 using namespace Net;
 
@@ -15,25 +16,7 @@ ServerHandshake::ServerHandshake()
 
 void ServerHandshake::Process(Net::CAbstractPeer* peer, SLNet::Packet* packet)
 {
-	CPacketManagerBase<ServerHandshake>::TPacketType* packetType;
-	if (m_packetHeader->Get(packet->data[0], packetType))
-	{
-		if (packet->length == packetType->iPacketSize)
-		{
-			if (!packetType->Handle(this, packet, peer))
-			{
-				std::cerr << "Failed to handle packet with header " << (unsigned)packet->data[0] << std::endl;
-				//peer->SetPhase(PHASE_CLOSE);
-			}
-		}
-		else
-			std::cerr << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
-	}
-	else
-	{
-		std::cerr << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-		//peer->SetPhase(PHASE_CLOSE);
-	}
+	ProcessPacket(this, *m_packetHeader, packet, peer);
 }
 
 void ServerHandshake::__LoadPacketHeaders()
@@ -43,7 +26,13 @@ void ServerHandshake::__LoadPacketHeaders()
 
 bool ServerHandshake::RecvHandshake(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 {
-	// TODO
+	CPeer* realPeer = dynamic_cast<CPeer*>(peer);
+	if (realPeer)
+	{
+		// Ora puoi usare i metodi specifici di CPeer
+		realPeer->SendHandshake(11, 22);
+	}
+
 
 	std::cout << "HEADER_CG_HANDSHAKE" << std::endl;
 	return true;

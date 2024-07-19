@@ -12,7 +12,7 @@ class Client : public Net::CAbstractEntity, Net::CAbstractPacketClientHandler
 
 		bool Initialize(const char* c_szAddr, int port) override;
 		void ProcessNet() override;
-		void Process() override;
+		void Process(SLNet::Packet* packet) override;
 
 	protected:
 		void __LoadPacketHeaders() override;

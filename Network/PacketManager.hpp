@@ -2,6 +2,7 @@
 
 #include <map>
 #include <memory>
+#include <iostream>
 #include "PacketDefinition.h"
 #include "AbstractPeer.h"
 
@@ -85,4 +86,56 @@ namespace Net
                 }
             } TPacketType;
     };
+
+    template<typename T>
+    void ProcessPacket(T* handler, CPacketManagerBase<T>& packetHeader, SLNet::Packet* packet, CAbstractPeer* peer)
+    {
+        typename CPacketManagerBase<T>::TPacketType* packetType;
+        if (packetHeader.Get(packet->data[0], packetType))
+        {
+            if (packet->length == packetType->iPacketSize)
+            {
+                if (!packetType->Handle(handler, packet, peer))
+                {
+                    std::cerr << "Failed to handle packet with header " << (unsigned)packet->data[0] << std::endl;
+                    //peer->SetPhase(PHASE_CLOSE);
+                }
+            }
+            else
+            {
+                std::cerr << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
+            }
+        }
+        else
+        {
+            std::cerr << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+            //peer->SetPhase(PHASE_CLOSE);
+        }
+    }
+
+    template<typename T>
+    void ProcessPacket(T* handler, CPacketManagerBase<T>& packetHeader, SLNet::Packet* packet)
+    {
+        typename CPacketManagerBase<T>::TPacketType* packetType;
+        if (packetHeader.Get(packet->data[0], packetType))
+        {
+            if (packet->length == packetType->iPacketSize)
+            {
+                if (!packetType->Handle(handler, packet, nullptr))
+                {
+                    std::cerr << "Failed to handle packet with header " << (unsigned)packet->data[0] << std::endl;
+                    //peer->SetPhase(PHASE_CLOSE);
+                }
+            }
+            else
+            {
+                std::cerr << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
+            }
+        }
+        else
+        {
+            std::cerr << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
+            //peer->SetPhase(PHASE_CLOSE);
+        }
+    }
 }

@@ -17,7 +17,7 @@ int main()
     {
         while (true)
         {
-            client.Process();
+            client.ProcessNet();
 
             if (client.IsConnected() && _kbhit())
             {

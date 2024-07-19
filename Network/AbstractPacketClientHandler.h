@@ -11,7 +11,7 @@ namespace Net
             virtual ~CAbstractPacketClientHandler() = 0;
 
         public:
-            virtual void Process() = 0;
+            virtual void Process(SLNet::Packet* packet) = 0;
     };
 
     inline CAbstractPacketClientHandler::~CAbstractPacketClientHandler() {}
