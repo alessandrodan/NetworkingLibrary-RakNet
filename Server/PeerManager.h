@@ -4,14 +4,6 @@
 #include <memory>
 #include <map>
 
-enum EPhase
-{
-	PHASE_CLOSE,
-	PHASE_HANDSHAKE,
-	PHASE_GAME,
-	PHASE_AUTH,
-};
-
 class CPeerManager
 {
 	public:

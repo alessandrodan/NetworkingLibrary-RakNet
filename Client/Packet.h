@@ -2,6 +2,14 @@
 
 #include <Network/PacketDefinition.h>
 
+enum EPhase
+{
+	PHASE_CLOSE,
+	PHASE_HANDSHAKE,
+	PHASE_AUTH,
+	PHASE_GAME,
+};
+
 enum PacketCGHeader : Net::TPacketHeader
 {
 	HEADER_CG_AUTH_REQUEST = Net::HEADER_FIRST_AVAILABLE,
@@ -12,10 +20,17 @@ enum PacketCGHeader : Net::TPacketHeader
 enum PacketGCHeader : Net::TPacketHeader
 {
 	HEADER_GC_RESPONSE = Net::HEADER_FIRST_AVAILABLE,
+	HEADER_GC_PHASE,
 	HEADER_GC_HANDSHAKE,
 };
 
 #pragma pack(push, 1)
+typedef struct packet_phase
+{
+	uint8_t	header;
+	uint8_t	phase;
+} TPacketGCPhase;
+
 typedef struct SPacketGCHandshake
 {
 	uint8_t	bHeader;
@@ -31,7 +46,6 @@ typedef struct SPacketCGHandshake
 	uint32_t	dwTime;
 	long	lDelta;
 } TPacketCGHandshake;
-
 
 
 struct TPacketCGAuthRequest

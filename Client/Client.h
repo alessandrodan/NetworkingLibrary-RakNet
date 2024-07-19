@@ -22,6 +22,7 @@ class Client : public Net::CAbstractEntity, Net::CAbstractPacketClientHandler
 
 		void SendHandshake(uint32_t dwHandshake, uint32_t dwTime, long lDelta);
 		void TestSend();
+		bool RecvPhase(SLNet::Packet* packet);
 		bool RecvHandshake(SLNet::Packet* packet);
 		bool TestRecv(SLNet::Packet* packet);
 

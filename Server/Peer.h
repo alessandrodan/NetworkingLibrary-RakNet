@@ -19,6 +19,7 @@ class CPeer : public Net::CAbstractPeer
 		void StartHandshake(uint32_t handshake);
 
 		void SendHandshake(uint32_t dwCurTime, long lNewDelta);
+		bool HandshakeProcess(uint32_t dwTime, long lDelta);
 
 		void SetPhase(int phase);
 

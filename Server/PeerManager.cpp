@@ -4,6 +4,7 @@
 #include <Network/NetDevice.h>
 #include <Network/Definition.h>
 #include <vector>
+#include "Packet.h"
 
 using namespace Net;
 

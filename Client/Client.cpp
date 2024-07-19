@@ -43,6 +43,7 @@ bool Client::Initialize(const char* c_szAddr, int port)
 
 void Client::__LoadPacketHeaders()
 {
+	m_packetHeader->Set(PacketGCHeader::HEADER_GC_PHASE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCPhase), &Client::RecvPhase));
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_HANDSHAKE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCHandshake), &Client::RecvHandshake));
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_RESPONSE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCResponse), &Client::TestRecv));
 }
@@ -120,6 +121,36 @@ void Client::TestSend()
 	SLNet::BitStream bsOut(sizeof(packet));
 	bsOut.Write((char*)&packet, sizeof(packet));
 	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+
+bool Client::RecvPhase(SLNet::Packet* packet)
+{
+	if (!packet)
+		return false;
+
+	SLNet::BitStream bsIn(packet->data, packet->length, false);
+
+	TPacketGCPhase phase;
+	bsIn.Read((char*)&phase, sizeof(phase));
+
+	switch (phase.phase)
+	{
+		case PHASE_AUTH:
+		{
+			// user login simulation
+
+			TPacketCGAuthRequest packet;
+			strcpy(packet.username, "username");
+			strcpy(packet.password, "password123");
+
+			SLNet::BitStream bsOut(sizeof(packet));
+			bsOut.Write((char*)&packet, sizeof(packet));
+			CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+		}
+		break;
+	}
+
+	return true;
 }
 
 bool Client::RecvHandshake(SLNet::Packet* packet)

@@ -112,6 +112,12 @@ void CPeer::Packet(const void* c_pvData, int iSize)
 	Net::CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_guid, false);
 }
 
+bool CPeer::HandshakeProcess(uint32_t dwTime, long lDelta)
+{
+	// Simulation of the handshake process. not concerned now
+	return true;
+}
+
 void CPeer::ProcessRecv(SLNet::Packet* packet)
 {
 	m_packetHandler->Process(this, packet);
@@ -121,6 +127,11 @@ void CPeer::SetPhase(int phase)
 {
 	m_iPhase = phase;
 
+	TPacketGCPhase pack;
+	pack.header = HEADER_GC_PHASE;
+	pack.phase = phase;
+	Packet(&pack, sizeof(TPacketGCPhase));
+
 	switch (m_iPhase)
 	{
 		case PHASE_CLOSE:
@@ -129,6 +140,10 @@ void CPeer::SetPhase(int phase)
 
 		case PHASE_HANDSHAKE:
 			m_packetHandler = m_packetHandlerServerHandshake.get();
+			break;
+
+		case PHASE_AUTH:
+			m_packetHandler = m_packetHandlerServerAuth.get();
 			break;
 	}
 }

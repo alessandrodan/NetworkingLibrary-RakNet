@@ -26,14 +26,26 @@ void ServerHandshake::__LoadPacketHeaders()
 
 bool ServerHandshake::RecvHandshake(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 {
-	CPeer* realPeer = dynamic_cast<CPeer*>(peer);
-	if (realPeer)
+	CPeer* d = dynamic_cast<CPeer*>(peer);
+	if (!d)
+		return false;
+
+	SLNet::BitStream bsIn(packet->data, packet->length, false);
+
+	TPacketCGHandshake p;
+	bsIn.Read((char*)&p, sizeof(p));
+
+	if (d->GetHandshake() != p.dwHandshake)
 	{
-		// Ora puoi usare i metodi specifici di CPeer
-		realPeer->SendHandshake(11, 22);
+		std::cerr << "Invalid Handshake on" << d->GetGUID().ToString() << std::endl;
+		return false;
 	}
 
+	if (d->IsPhase(PHASE_HANDSHAKE))
+	{
+		if (d->HandshakeProcess(p.dwTime, p.lDelta))
+			d->SetPhase(PHASE_AUTH);
+	}
 
-	std::cout << "HEADER_CG_HANDSHAKE" << std::endl;
 	return true;
 }

@@ -6,6 +6,7 @@
 #include <Network/NetDevice.h>
 #include <Network/Definition.h>
 #include "ServerMain.h"
+#include "Packet.h"
 
 using namespace Net;
 
