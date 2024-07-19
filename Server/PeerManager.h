@@ -3,6 +3,7 @@
 #include "Peer.h"
 #include <memory>
 #include <map>
+#include <set>
 
 class CPeerManager
 {
@@ -26,6 +27,6 @@ class CPeerManager
 		int				m_iPeerConnected;
 		int				m_iHandleCount;
 		bool			m_bDestroyed;
-		std::map<uint32_t, std::shared_ptr<CPeer>> m_map_handshake;
+		std::set<uint32_t> m_setHandshake;
 		std::map<SLNet::RakNetGUID, std::shared_ptr<CPeer>> m_mapPeer;
 };

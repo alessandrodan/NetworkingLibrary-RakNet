@@ -14,7 +14,7 @@ CPeerManager::CPeerManager()
     m_iHandleCount = 0;
     m_bDestroyed = false;
 
-    m_map_handshake.clear();
+    m_setHandshake.clear();
     m_mapPeer.clear();
 }
 
@@ -37,7 +37,7 @@ void CPeerManager::Destroy()
     }
 
     m_mapPeer.clear();
-    m_map_handshake.clear();
+    m_setHandshake.clear();
 }
 
 void CPeerManager::DestroyClosed()
@@ -66,7 +66,7 @@ void CPeerManager::DestroyDesc(CPeer* d, bool skipMapErase)
     if (!skipMapErase)
     {
         if (d->GetHandshake())
-            m_map_handshake.erase(d->GetHandshake());
+            m_setHandshake.erase(d->GetHandshake());
 
         if (d->GetGUID() != SLNet::UNASSIGNED_RAKNET_GUID)
             m_mapPeer.erase(d->GetGUID());
@@ -88,7 +88,7 @@ void CPeerManager::AcceptPeer(SLNet::RakNetGUID guid)
 	auto newPeer = std::make_shared<CPeer>();
     newPeer->Setup(guid, ++m_iHandleCount, handshake);
 
-    m_map_handshake.emplace(handshake, newPeer);
+    m_setHandshake.emplace(handshake);
     m_mapPeer.emplace(guid, newPeer);
 
     ++m_iPeerConnected;
@@ -132,27 +132,18 @@ uint32_t GetCRC32(const char* buf, size_t len)
 
 uint32_t CPeerManager::__CreateHandshake()
 {
-    uint32_t crc;
     char crc_buf[8];
 
-    std::map<uint32_t, std::shared_ptr<CPeer>>::iterator it;
+    auto generate_crc = [&]() -> uint32_t {
+        uint32_t val = thecore_random() % (1024 * 1024);
+        *(uint32_t*)(crc_buf) = val;
+        *((uint32_t*)crc_buf + 1) = get_global_time();
+        return GetCRC32(crc_buf, 8);
+    };
 
-    while (true)
-    {
-        do
-        {
-            uint32_t val = thecore_random() % (1024 * 1024);
-
-            *(uint32_t*)(crc_buf) = val;
-            *((uint32_t*)crc_buf + 1) = get_global_time();
-
-            crc = GetCRC32(crc_buf, 8);
-            it = m_map_handshake.find(crc);
-        } while (it != m_map_handshake.end());
-
-        if (crc != 0)
-            break;
-    }
+    uint32_t crc = generate_crc();
+    while (crc == 0 || m_setHandshake.find(crc) != m_setHandshake.end())
+        crc = generate_crc();
 
     return crc;
 }
