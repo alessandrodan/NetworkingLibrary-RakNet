@@ -4,7 +4,7 @@
 #include <Network/AbstractPacketClientHandler.h>
 #include <Network/PacketManager.hpp>
 
-class Client : public Net::CAbstractEntity, Net::CAbstractPacketClientHandler
+class Client : public Net::CAbstractEntity, public Net::CAbstractPacketClientHandler<Client>
 {
 	public:
 		Client();
@@ -12,9 +12,7 @@ class Client : public Net::CAbstractEntity, Net::CAbstractPacketClientHandler
 
 		bool Initialize(const char* c_szAddr, int port) override;
 		void ProcessNet() override;
-		void Process(SLNet::Packet* packet) override;
 
-	protected:
 		void LoadPacketHeaders() override;
 
 	public:
@@ -28,7 +26,4 @@ class Client : public Net::CAbstractEntity, Net::CAbstractPacketClientHandler
 
 	private:
 		bool isConnected;
-
-		using PacketManager = Net::CPacketManagerClient<Client>;
-		std::unique_ptr<PacketManager> m_packetHeader;
 };

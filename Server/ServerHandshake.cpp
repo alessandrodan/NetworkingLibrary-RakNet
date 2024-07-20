@@ -10,7 +10,7 @@ using namespace Net;
 
 ServerHandshake::ServerHandshake()
 {
-	Initialize();
+	InitializeBase();
 }
 
 void ServerHandshake::LoadPacketHeaders()

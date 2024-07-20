@@ -12,9 +12,8 @@ using namespace Net;
 
 Client::Client()
 {
+	InitializeBase();
 	isConnected = false;
-	m_packetHeader = std::make_unique<PacketManager>();
-	LoadPacketHeaders();
 }
 
 bool Client::Initialize(const char* c_szAddr, int port)
@@ -46,11 +45,6 @@ void Client::LoadPacketHeaders()
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_PHASE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCPhase), &Client::RecvPhase));
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_HANDSHAKE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCHandshake), &Client::RecvHandshake));
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_RESPONSE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCResponse), &Client::TestRecv));
-}
-
-void Client::Process(SLNet::Packet* packet)
-{
-	ProcessPacket(this, *m_packetHeader, packet);
 }
 
 void Client::ProcessNet()

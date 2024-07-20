@@ -1,8 +1,6 @@
 #pragma once
 
-#include "AbstractPacketHandler.h"
 #include "AbstractPeer.h"
-#include <slikenet/types.h>
 
 namespace Net
 {
@@ -16,11 +14,11 @@ namespace Net
             virtual void LoadPacketHeaders() = 0;
     };
 
-    class CAbstractPacketClientHandler : public CAbstractPacketHandler
+    class CAbstractPacketClientHandlerBase : public CAbstractPacketHandler
     {
         public:
-            CAbstractPacketClientHandler() = default;
-            virtual ~CAbstractPacketClientHandler() = 0;
+            CAbstractPacketClientHandlerBase() = default;
+            virtual ~CAbstractPacketClientHandlerBase() = 0;
 
         public:
             virtual void Process(SLNet::Packet* packet) = 0;
@@ -37,6 +35,6 @@ namespace Net
     };
 
     inline CAbstractPacketHandler::~CAbstractPacketHandler() {}
-    inline CAbstractPacketClientHandler::~CAbstractPacketClientHandler() {}
+    inline CAbstractPacketClientHandlerBase::~CAbstractPacketClientHandlerBase() {}
     inline CAbstractPacketServerHandlerBase::~CAbstractPacketServerHandlerBase() {}
 }

@@ -9,7 +9,7 @@ using namespace Net;
 
 ServerAuth::ServerAuth()
 {
-	Initialize();
+	InitializeBase();
 }
 
 void ServerAuth::LoadPacketHeaders()

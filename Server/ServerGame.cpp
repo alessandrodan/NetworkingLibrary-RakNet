@@ -12,7 +12,7 @@ using namespace Net;
 
 ServerGame::ServerGame()
 {
-	Initialize();
+	InitializeBase();
 }
 
 void ServerGame::LoadPacketHeaders()
