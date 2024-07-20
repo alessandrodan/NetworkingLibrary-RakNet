@@ -12,18 +12,12 @@ using namespace Net;
 
 ServerGame::ServerGame()
 {
-	m_packetHeader = std::make_unique<PacketManager>();
-	__LoadPacketHeaders();
+	Initialize();
 }
 
-void ServerGame::__LoadPacketHeaders()
+void ServerGame::LoadPacketHeaders()
 {
 	m_packetHeader->Set(PacketCGHeader::HEADER_CG_ACTION1, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketCGAction1), &ServerGame::TestRecv));
-}
-
-void ServerGame::Process(Net::CAbstractPeer* peer, SLNet::Packet* packet)
-{
-	ProcessPacket(this, *m_packetHeader, packet, peer);
 }
 
 bool ServerGame::TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer)

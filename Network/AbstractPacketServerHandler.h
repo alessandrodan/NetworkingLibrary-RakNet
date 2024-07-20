@@ -1,20 +1,32 @@
 #pragma once
 
 #include "AbstractPacketHandler.h"
-#include "AbstractPeer.h"
-#include <slikenet/types.h>
+#include "PacketManager.hpp"
 
 namespace Net
 {
-    class CAbstractPacketServerHandler : public CAbstractPacketHandler
+    template<typename TDerived>
+    class CAbstractPacketHandlerBase : public CAbstractPacketServerHandler
     {
         public:
-            CAbstractPacketServerHandler() = default;
-            virtual ~CAbstractPacketServerHandler() = 0;
+            using PacketManager = CPacketManagerServer<TDerived>;
 
-        public:
-            virtual void Process(CAbstractPeer* peer, SLNet::Packet* packet) = 0;
+            CAbstractPacketHandlerBase()
+            {
+                m_packetHeader = std::make_unique<PacketManager>();
+            }
+
+            void Initialize()
+            {
+                static_cast<TDerived*>(this)->LoadPacketHeaders();
+            }
+
+            void Process(CAbstractPeer* peer, SLNet::Packet* packet) override
+            {
+                ProcessPacket(static_cast<TDerived*>(this), *m_packetHeader, packet, peer);
+            }
+
+        protected:
+            std::unique_ptr<PacketManager> m_packetHeader;
     };
-
-    inline CAbstractPacketServerHandler::~CAbstractPacketServerHandler() {}
 }

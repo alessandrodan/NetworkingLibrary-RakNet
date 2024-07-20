@@ -4,21 +4,15 @@
 #include <Network/PacketManager.hpp>
 #include <memory>
 
-class ServerHandshake : public Net::CAbstractPacketServerHandler
+class ServerHandshake : public Net::CAbstractPacketHandlerBase<ServerHandshake>
 {
 	public:
 		ServerHandshake();
 		~ServerHandshake() = default;
 
-		void Process(Net::CAbstractPeer* peer, SLNet::Packet* packet) override;
-
-	protected:
-		void __LoadPacketHeaders() override;
+	public:
+		void LoadPacketHeaders() override;
 
 	public:
 		bool RecvHandshake(SLNet::Packet* packet, Net::CAbstractPeer* peer);
-
-	private:
-		using PacketManager = Net::CPacketManagerServer<ServerHandshake>;
-		std::unique_ptr<PacketManager> m_packetHeader;
 };

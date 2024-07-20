@@ -4,20 +4,14 @@
 #include <Network/PacketManager.hpp>
 #include <memory>
 
-class ServerAuth : public Net::CAbstractPacketServerHandler
+class ServerAuth : public Net::CAbstractPacketHandlerBase<ServerAuth>
 {
 	public:
 		ServerAuth();
 		~ServerAuth() = default;
 
-		void Process(Net::CAbstractPeer* peer, SLNet::Packet* packet) override;
-
-	protected:
-		void __LoadPacketHeaders() override;
-
-	private:
-		using PacketManager = Net::CPacketManagerServer<ServerAuth>;
-		std::unique_ptr<PacketManager> m_packetHeader;
+	public:
+		void LoadPacketHeaders() override;
 
 	public:
 		bool TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer);

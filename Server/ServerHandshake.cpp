@@ -10,16 +10,10 @@ using namespace Net;
 
 ServerHandshake::ServerHandshake()
 {
-	m_packetHeader = std::make_unique<PacketManager>();
-	__LoadPacketHeaders();
+	Initialize();
 }
 
-void ServerHandshake::Process(Net::CAbstractPeer* peer, SLNet::Packet* packet)
-{
-	ProcessPacket(this, *m_packetHeader, packet, peer);
-}
-
-void ServerHandshake::__LoadPacketHeaders()
+void ServerHandshake::LoadPacketHeaders()
 {
 	m_packetHeader->Set(PacketCGHeader::HEADER_CG_HANDSHAKE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketCGHandshake), &ServerHandshake::RecvHandshake));
 }

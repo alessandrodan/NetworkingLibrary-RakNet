@@ -15,7 +15,7 @@ class Client : public Net::CAbstractEntity, Net::CAbstractPacketClientHandler
 		void Process(SLNet::Packet* packet) override;
 
 	protected:
-		void __LoadPacketHeaders() override;
+		void LoadPacketHeaders() override;
 
 	public:
 		bool IsConnected();

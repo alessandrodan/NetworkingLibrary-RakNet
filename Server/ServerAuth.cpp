@@ -9,16 +9,10 @@ using namespace Net;
 
 ServerAuth::ServerAuth()
 {
-	m_packetHeader = std::make_unique<PacketManager>();
-	__LoadPacketHeaders();
+	Initialize();
 }
 
-void ServerAuth::Process(Net::CAbstractPeer* peer, SLNet::Packet* packet)
-{
-	ProcessPacket(this, *m_packetHeader, packet, peer);
-}
-
-void ServerAuth::__LoadPacketHeaders()
+void ServerAuth::LoadPacketHeaders()
 {
 	m_packetHeader->Set(PacketCGHeader::HEADER_CG_AUTH_REQUEST, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketCGAuthRequest), &ServerAuth::TestRecv));
 }

@@ -5,22 +5,16 @@
 #include <Network/AbstractPacketServerHandler.h>
 #include <Network/PacketManager.hpp>
 
-class ServerGame : Net::CAbstractPacketServerHandler
+class ServerGame : public Net::CAbstractPacketHandlerBase<ServerGame>
 {
 	public:
 		ServerGame();
 		~ServerGame() = default;
 
-		void Process(Net::CAbstractPeer* peer, SLNet::Packet* packet) override;
-
-	protected:
-		void __LoadPacketHeaders() override;
+	public:
+		void LoadPacketHeaders() override;
 
 	public:
 		bool TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer);
 		bool TestSend(SLNet::Packet* packet);
-
-	private:
-		using PacketManager = Net::CPacketManagerServer<ServerGame>;
-		std::unique_ptr<PacketManager> m_packetHeader;
 };

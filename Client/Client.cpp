@@ -14,7 +14,7 @@ Client::Client()
 {
 	isConnected = false;
 	m_packetHeader = std::make_unique<PacketManager>();
-	__LoadPacketHeaders();
+	LoadPacketHeaders();
 }
 
 bool Client::Initialize(const char* c_szAddr, int port)
@@ -41,7 +41,7 @@ bool Client::Initialize(const char* c_szAddr, int port)
     return true;
 }
 
-void Client::__LoadPacketHeaders()
+void Client::LoadPacketHeaders()
 {
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_PHASE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCPhase), &Client::RecvPhase));
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_HANDSHAKE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCHandshake), &Client::RecvHandshake));
