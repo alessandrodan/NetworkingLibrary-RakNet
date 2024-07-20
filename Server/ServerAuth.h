@@ -4,7 +4,7 @@
 #include <Network/PacketManager.hpp>
 #include <memory>
 
-class ServerAuth : public Net::CAbstractPacketHandlerBase<ServerAuth>
+class ServerAuth : public Net::CAbstractPacketServerHandler<ServerAuth>
 {
 	public:
 		ServerAuth();

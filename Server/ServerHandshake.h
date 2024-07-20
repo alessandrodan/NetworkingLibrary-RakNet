@@ -4,7 +4,7 @@
 #include <Network/PacketManager.hpp>
 #include <memory>
 
-class ServerHandshake : public Net::CAbstractPacketHandlerBase<ServerHandshake>
+class ServerHandshake : public Net::CAbstractPacketServerHandler<ServerHandshake>
 {
 	public:
 		ServerHandshake();

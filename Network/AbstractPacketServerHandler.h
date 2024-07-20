@@ -6,12 +6,12 @@
 namespace Net
 {
     template<typename TDerived>
-    class CAbstractPacketHandlerBase : public CAbstractPacketServerHandler
+    class CAbstractPacketServerHandler : public CAbstractPacketServerHandlerBase
     {
         public:
             using PacketManager = CPacketManagerServer<TDerived>;
 
-            CAbstractPacketHandlerBase()
+            CAbstractPacketServerHandler()
             {
                 m_packetHeader = std::make_unique<PacketManager>();
             }

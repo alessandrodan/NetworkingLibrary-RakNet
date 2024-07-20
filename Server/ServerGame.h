@@ -5,7 +5,7 @@
 #include <Network/AbstractPacketServerHandler.h>
 #include <Network/PacketManager.hpp>
 
-class ServerGame : public Net::CAbstractPacketHandlerBase<ServerGame>
+class ServerGame : public Net::CAbstractPacketServerHandler<ServerGame>
 {
 	public:
 		ServerGame();

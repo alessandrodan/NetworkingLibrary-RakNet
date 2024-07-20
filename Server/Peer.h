@@ -36,7 +36,7 @@ class CPeer : public Net::CAbstractPeer
 		int				m_iPhase;
 		bool			m_bDestroyed;
 
-		Net::CAbstractPacketServerHandler* m_packetHandler;
+		Net::CAbstractPacketServerHandlerBase* m_packetHandler;
 		std::unique_ptr<ServerHandshake> m_packetHandlerServerHandshake;
 		std::unique_ptr<ServerAuth> m_packetHandlerServerAuth;
 		std::unique_ptr<ServerGame> m_packetHandlerServerGame;
