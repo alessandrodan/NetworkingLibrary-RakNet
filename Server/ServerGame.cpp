@@ -2,11 +2,13 @@
 #include <iostream>
 #include <slikenet/types.h>
 #include <slikenet/MessageIdentifiers.h>
-#include <slikenet/BitStream.h>
 #include <Network/NetDevice.h>
 #include <Network/Definition.h>
 #include "ServerGame.h"
 #include "Packet.h"
+#include <Network/PacketIO.hpp>
+#include "Peer.h"
+#include "PeerManager.h"
 
 using namespace Net;
 
@@ -22,29 +24,27 @@ void ServerGame::LoadPacketHeaders()
 
 bool ServerGame::TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 {
-	if (!packet)
+	CPeer* d = CPeerManager::ValidPeer(peer);
+	if (!d)
 		return false;
 
 	TPacketCGAction1 action1;
-	if (packet->length != sizeof(action1))
+	if (!CPacketIO::ReadPacketData(packet, action1))
 		return false;
-
-	SLNet::BitStream bsIn(packet->data, packet->length, false);
-	bsIn.Read((char*)&action1, sizeof(action1));
 
 	std::cout << "HEADER_CG_ACTION1 receved. num = " << action1.numIntero << std::endl;
 
-	TestSend(packet);
+	TestSend(packet, peer);
 	return true;
 }
 
-bool ServerGame::TestSend(SLNet::Packet* packet)
+bool ServerGame::TestSend(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 {
-	TPacketGCResponse response;
+	if (!peer)
+		return false;
 
-	SLNet::BitStream bsOut(sizeof(response));
-	bsOut.Write((char*)&response, sizeof(response));
-	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, packet->systemAddress, false);
+	TPacketGCResponse response;
+	peer->Packet(&response, sizeof(response));
 
 	return true;
 }

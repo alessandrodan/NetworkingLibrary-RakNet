@@ -19,6 +19,7 @@ class CPeerManager
 		std::shared_ptr<CPeer> GetPeer(SLNet::RakNetGUID guid);
 		std::shared_ptr<CPeer> GetFirstPeer();
 
+		static CPeer* ValidPeer(Net::CAbstractPeer* peer);
 
 	protected:
 		uint32_t __CreateHandshake();

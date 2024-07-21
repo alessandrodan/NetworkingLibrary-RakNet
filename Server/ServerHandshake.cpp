@@ -1,10 +1,11 @@
 #include "StdAfx.h"
 #include "ServerHandshake.h"
 #include "Packet.h"
-#include <slikenet/BitStream.h>
 #include <iostream>
 #include <Network/NetDevice.h>
 #include "Peer.h"
+#include <Network/PacketIO.hpp>
+#include "PeerManager.h"
 
 using namespace Net;
 
@@ -20,14 +21,13 @@ void ServerHandshake::LoadPacketHeaders()
 
 bool ServerHandshake::RecvHandshake(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 {
-	CPeer* d = dynamic_cast<CPeer*>(peer);
+	CPeer* d = CPeerManager::ValidPeer(peer);
 	if (!d)
 		return false;
 
-	SLNet::BitStream bsIn(packet->data, packet->length, false);
-
 	TPacketCGHandshake p;
-	bsIn.Read((char*)&p, sizeof(p));
+	if (!CPacketIO::ReadPacketData(packet, p))
+		return false;
 
 	if (d->GetHandshake() != p.dwHandshake)
 	{

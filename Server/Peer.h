@@ -14,6 +14,7 @@ class CPeer : public Net::CAbstractPeer
 
 	public:
 		void ProcessRecv(SLNet::Packet* packet) override;
+		void Packet(const void* c_pvData, int iSize) override;
 
 		void Setup(SLNet::RakNetGUID guid, int handleCount, uint32_t handshake);
 		void StartHandshake(uint32_t handshake);
@@ -22,8 +23,6 @@ class CPeer : public Net::CAbstractPeer
 		bool HandshakeProcess(uint32_t dwTime, long lDelta);
 
 		void SetPhase(int phase);
-
-		void Packet(const void* c_pvData, int iSize);
 
 		uint32_t GetHandshake() const { return m_dwHandshake; }
 		SLNet::RakNetGUID GetGUID() const { return m_guid; }

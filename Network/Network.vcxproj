@@ -27,6 +27,7 @@
     <ClInclude Include="Definition.h" />
     <ClInclude Include="NetDevice.h" />
     <ClInclude Include="PacketDefinition.h" />
+    <ClInclude Include="PacketIO.hpp" />
     <ClInclude Include="PacketManager.hpp" />
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>

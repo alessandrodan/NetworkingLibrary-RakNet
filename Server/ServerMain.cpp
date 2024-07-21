@@ -2,7 +2,6 @@
 #include <iostream>
 #include <slikenet/types.h>
 #include <slikenet/MessageIdentifiers.h>
-#include <slikenet/BitStream.h>
 #include <Network/NetDevice.h>
 #include <Network/Definition.h>
 #include "ServerMain.h"

@@ -1,9 +1,11 @@
 #include "StdAfx.h"
 #include "ServerAuth.h"
 #include "Packet.h"
-#include <slikenet/BitStream.h>
 #include <iostream>
 #include <Network/NetDevice.h>
+#include <Network/PacketIO.hpp>
+#include "Peer.h"
+#include "PeerManager.h"
 
 using namespace Net;
 
@@ -19,15 +21,13 @@ void ServerAuth::LoadPacketHeaders()
 
 bool ServerAuth::TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 {
-	if (!packet)
+	CPeer* d = CPeerManager::ValidPeer(peer);
+	if (!d)
 		return false;
 
 	TPacketCGAuthRequest authRequest;
-	if (packet->length != sizeof(authRequest))
+	if (!CPacketIO::ReadPacketData(packet, authRequest))
 		return false;
-
-	SLNet::BitStream bsIn(packet->data, packet->length, false);
-	bsIn.Read((char*)&authRequest, sizeof(authRequest));
 
 	std::cout << "HEADER_CG_AUTH_REQUEST receved. username = " << authRequest.username << "\t password = " << authRequest.password << std::endl;
 

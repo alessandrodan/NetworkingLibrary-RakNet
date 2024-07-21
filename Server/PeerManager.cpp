@@ -147,3 +147,12 @@ uint32_t CPeerManager::__CreateHandshake()
 
     return crc;
 }
+
+CPeer* CPeerManager::ValidPeer(Net::CAbstractPeer* peer)
+{
+    CPeer* d = dynamic_cast<CPeer*>(peer);
+    if (!d)
+        return nullptr;
+
+    return d;
+}

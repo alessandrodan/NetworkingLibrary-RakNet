@@ -1,12 +1,12 @@
 #include "StdAfx.h"
 #include <iostream>
 #include <slikenet/types.h>
-#include <slikenet/BitStream.h>
 #include <slikenet/MessageIdentifiers.h>
 #include <Network/NetDevice.h>
 #include "Client.h"
 #include <Network/Definition.h>
 #include "Packet.h"
+#include <Network/PacketIO.hpp>
 
 using namespace Net;
 
@@ -102,9 +102,7 @@ void Client::SendHandshake(uint32_t dwHandshake, uint32_t dwTime, long lDelta)
 	packet.dwTime = dwTime;
 	packet.lDelta = lDelta;
 
-	SLNet::BitStream bsOut(sizeof(packet));
-	bsOut.Write((char*)&packet, sizeof(packet));
-	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	Net::CPacketIO::SendPacket(&packet, sizeof(packet), SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 void Client::TestSend()
@@ -112,20 +110,14 @@ void Client::TestSend()
 	TPacketCGAction1 packet;
 	packet.numIntero = 5;
 
-	SLNet::BitStream bsOut(sizeof(packet));
-	bsOut.Write((char*)&packet, sizeof(packet));
-	CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	Net::CPacketIO::SendPacket(&packet, sizeof(packet), SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 bool Client::RecvPhase(SLNet::Packet* packet)
 {
-	if (!packet)
-		return false;
-
-	SLNet::BitStream bsIn(packet->data, packet->length, false);
-
 	TPacketGCPhase phase;
-	bsIn.Read((char*)&phase, sizeof(phase));
+	if (!CPacketIO::ReadPacketData(packet, phase))
+		return false;
 
 	switch (phase.phase)
 	{
@@ -137,9 +129,7 @@ bool Client::RecvPhase(SLNet::Packet* packet)
 			strcpy(packet.username, "username");
 			strcpy(packet.password, "password123");
 
-			SLNet::BitStream bsOut(sizeof(packet));
-			bsOut.Write((char*)&packet, sizeof(packet));
-			CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+			Net::CPacketIO::SendPacket(&packet, sizeof(packet), SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 		}
 		break;
 	}
@@ -149,13 +139,9 @@ bool Client::RecvPhase(SLNet::Packet* packet)
 
 bool Client::RecvHandshake(SLNet::Packet* packet)
 {
-	if (!packet)
-		return false;
-
-	SLNet::BitStream bsIn(packet->data, packet->length, false);
-
 	TPacketGCHandshake handshake;
-	bsIn.Read((char*)&handshake, sizeof(handshake));
+	if (!CPacketIO::ReadPacketData(packet, handshake))
+		return false;
 
 	std::cout << "HANDSHAKE RECV" << handshake.dwTime << "\t" << handshake.lDelta << std::endl;
 
@@ -167,15 +153,9 @@ bool Client::RecvHandshake(SLNet::Packet* packet)
 
 bool Client::TestRecv(SLNet::Packet* packet)
 {
-	if (!packet)
-		return false;
-
 	TPacketGCResponse response;
-	if (packet->length != sizeof(response))
+	if (!CPacketIO::ReadPacketData(packet, response))
 		return false;
-
-	SLNet::BitStream bsIn(packet->data, packet->length, false);
-	bsIn.Read((char*)&response, sizeof(response));
 
 	std::cout << "HEADER_GC_RESPONSE" << std::endl;
 

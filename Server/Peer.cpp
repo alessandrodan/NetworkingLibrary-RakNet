@@ -3,8 +3,8 @@
 #include "PeerManager.h"
 #include <iostream>
 #include <Network/NetDevice.h>
+#include <Network/PacketIO.hpp>
 #include "Packet.h"
-#include <slikenet/BitStream.h>
 
 void gettimeofday(struct timeval* t, struct timezone* dummy)
 {
@@ -106,10 +106,7 @@ void CPeer::Packet(const void* c_pvData, int iSize)
 	if (m_guid == SLNet::UNASSIGNED_RAKNET_GUID)
 		return;
 
-	SLNet::BitStream bsOut(iSize);
-	bsOut.Write((const char*)c_pvData, iSize);
-
-	Net::CNetDevice::peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_guid, false);
+	Net::CPacketIO::SendPacket(c_pvData, iSize, m_guid);
 }
 
 bool CPeer::HandshakeProcess(uint32_t dwTime, long lDelta)

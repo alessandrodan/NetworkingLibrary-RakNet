@@ -16,5 +16,5 @@ class ServerGame : public Net::CAbstractPacketServerHandler<ServerGame>
 
 	public:
 		bool TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer);
-		bool TestSend(SLNet::Packet* packet);
+		bool TestSend(SLNet::Packet* packet, Net::CAbstractPeer* peer);
 };
