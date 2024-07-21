@@ -12,7 +12,7 @@ using namespace Net;
 
 Client::Client()
 {
-	InitializeBase();
+	InitializePacketHandler();
 	isConnected = false;
 }
 

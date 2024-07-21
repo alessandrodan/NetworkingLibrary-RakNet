@@ -16,7 +16,7 @@ namespace Net
                 m_packetHeader = std::make_unique<PacketManager>();
             }
 
-            void InitializeBase()
+            void InitializePacketHandler()
             {
                 static_cast<TDerived*>(this)->LoadPacketHeaders();
             }

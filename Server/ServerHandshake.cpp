@@ -11,7 +11,7 @@ using namespace Net;
 
 ServerHandshake::ServerHandshake()
 {
-	InitializeBase();
+	InitializePacketHandler();
 }
 
 void ServerHandshake::LoadPacketHeaders()

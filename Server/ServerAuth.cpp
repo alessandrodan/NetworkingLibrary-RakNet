@@ -11,7 +11,7 @@ using namespace Net;
 
 ServerAuth::ServerAuth()
 {
-	InitializeBase();
+	InitializePacketHandler();
 }
 
 void ServerAuth::LoadPacketHeaders()

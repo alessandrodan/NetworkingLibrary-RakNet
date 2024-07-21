@@ -14,7 +14,7 @@ using namespace Net;
 
 ServerGame::ServerGame()
 {
-	InitializeBase();
+	InitializePacketHandler();
 }
 
 void ServerGame::LoadPacketHeaders()
