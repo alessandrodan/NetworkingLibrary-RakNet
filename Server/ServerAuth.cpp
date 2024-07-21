@@ -29,7 +29,15 @@ bool ServerAuth::TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 	if (!CPacketIO::ReadPacketData(packet, authRequest))
 		return false;
 
-	std::cout << "HEADER_CG_AUTH_REQUEST receved. username = " << authRequest.username << "\t password = " << authRequest.password << std::endl;
+	if (!strcmp(authRequest.username, "username") && !strcmp(authRequest.password, "password123"))
+	{
+		std::cout << "HEADER_CG_AUTH_REQUEST receved. correct" << std::endl;
+		d->SetPhase(PHASE_GAME);
+	}
+	else
+	{
+		std::cout << "HEADER_CG_AUTH_REQUEST receved. not correct. username = " << authRequest.username << "\t password = " << authRequest.password << std::endl;
+	}
 
 	return true;
 }

@@ -142,5 +142,9 @@ void CPeer::SetPhase(int phase)
 		case PHASE_AUTH:
 			m_packetHandler = m_packetHandlerServerAuth.get();
 			break;
+
+		case PHASE_GAME:
+			m_packetHandler = m_packetHandlerServerGame.get();
+			break;
 	}
 }

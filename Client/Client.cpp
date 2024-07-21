@@ -14,6 +14,8 @@ Client::Client()
 {
 	InitializePacketHandler();
 	isConnected = false;
+
+	srand(static_cast<unsigned int>(time(0)));
 }
 
 bool Client::Initialize(const char* c_szAddr, int port)
@@ -105,6 +107,18 @@ void Client::SendHandshake(uint32_t dwHandshake, uint32_t dwTime, long lDelta)
 	Net::CPacketIO::SendPacket(&packet, sizeof(packet), SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
+void Client::SendLogin()
+{
+	// user login simulation
+
+	TPacketCGAuthRequest packet;
+	strcpy(packet.username, "username");
+	const char* passwords[] = { "password1", "password12", "password123" };
+	strcpy(packet.password, passwords[rand() % 3]);
+
+	Net::CPacketIO::SendPacket(&packet, sizeof(packet), SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+
 void Client::TestSend()
 {
 	TPacketCGAction1 packet;
@@ -123,13 +137,6 @@ bool Client::RecvPhase(SLNet::Packet* packet)
 	{
 		case PHASE_AUTH:
 		{
-			// user login simulation
-
-			TPacketCGAuthRequest packet;
-			strcpy(packet.username, "username");
-			strcpy(packet.password, "password123");
-
-			Net::CPacketIO::SendPacket(&packet, sizeof(packet), SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 		}
 		break;
 	}

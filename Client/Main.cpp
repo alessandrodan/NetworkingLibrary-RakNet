@@ -35,6 +35,8 @@ int main()
 
                 if (input == "ok")
                     client.TestSend();
+                else if (input == "login")
+                    client.SendLogin();
                 else if (input == "q")
                     break;
             }
