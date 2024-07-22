@@ -1,7 +1,5 @@
 #include "StdAfx.h"
 #include <iostream>
-#include <slikenet/types.h>
-#include <slikenet/MessageIdentifiers.h>
 #include <Network/NetDevice.h>
 #include "Client.h"
 #include <Network/Definition.h>
@@ -98,9 +96,6 @@ void Client::ProcessNet()
 
 			default:
 				Process(packet);
-
-				//std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-				//CNetDevice::peer->CloseConnection(packet->systemAddress, true);
 		}
 	}
 }

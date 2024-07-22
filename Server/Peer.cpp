@@ -117,6 +117,9 @@ bool CPeer::HandshakeProcess(uint32_t dwTime, long lDelta)
 
 void CPeer::ProcessRecv(SLNet::Packet* packet)
 {
+	if (m_iPhase == PHASE_CLOSE)
+		return;
+
 	m_packetHandler->Process(this, packet);
 }
 

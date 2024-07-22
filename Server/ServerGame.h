@@ -1,6 +1,5 @@
 #pragma once
 
-#include <slikenet/types.h>
 #include <Network/AbstractEntity.h>
 #include <Network/AbstractPacketServerHandler.h>
 #include <Network/PacketManager.hpp>

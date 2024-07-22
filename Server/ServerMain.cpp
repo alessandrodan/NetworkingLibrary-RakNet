@@ -1,7 +1,5 @@
 #include "StdAfx.h"
 #include <iostream>
-#include <slikenet/types.h>
-#include <slikenet/MessageIdentifiers.h>
 #include <Network/NetDevice.h>
 #include <Network/Definition.h>
 #include "ServerMain.h"
@@ -31,7 +29,7 @@ void ServerMain::ProcessNet()
 			case ID_NEW_INCOMING_CONNECTION:
 			{
 				m_peerManager->AcceptPeer(packet->guid);
-				std::cout << "New incoming connection: " << packet->systemAddress.ToString() << std::endl;
+				std::cout << "New incoming connection: " << packet->systemAddress.ToString() << "\t. GUID (String): " << packet->guid.ToString() << "GUID (Int): " << packet->guid.ToUint32(packet->guid) << std::endl;
 			}
 			break;
 
@@ -39,7 +37,11 @@ void ServerMain::ProcessNet()
 			{
 				const auto peer = m_peerManager->GetPeer(packet->guid);
 				if (!peer)
+				{
+					std::cerr << "Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
+					CNetDevice::peer->CloseConnection(packet->systemAddress, false);
 					return;
+				}
 
 				peer->SetPhase(PHASE_CLOSE);
 				std::cout << "Client Disconnected: " << packet->systemAddress.ToString() << std::endl;
@@ -50,7 +52,11 @@ void ServerMain::ProcessNet()
 			{
 				const auto peer = m_peerManager->GetPeer(packet->guid);
 				if (!peer)
+				{
+					std::cerr << "Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
+					CNetDevice::peer->CloseConnection(packet->systemAddress, false);
 					return;
+				}
 
 				peer->SetPhase(PHASE_CLOSE);
 				std::cout << "Client Connection lost: " << packet->systemAddress.ToString() << std::endl;
@@ -61,12 +67,13 @@ void ServerMain::ProcessNet()
 			{
 				const auto peer = m_peerManager->GetPeer(packet->guid);
 				if (!peer)
+				{
+					std::cerr << "Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
+					CNetDevice::peer->CloseConnection(packet->systemAddress, false);
 					return;
+				}
 
 				peer->ProcessRecv(packet);
-
-				//std::cout << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-				//CNetDevice::peer->CloseConnection(packet->systemAddress, true);
 			}
 		}
 	}

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <slikenet/types.h>
 #include <Network/AbstractPacketServerHandler.h>
 #include "ServerHandshake.h"
 #include "ServerAuth.h"

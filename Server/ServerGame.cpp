@@ -1,7 +1,5 @@
 #include "StdAfx.h"
 #include <iostream>
-#include <slikenet/types.h>
-#include <slikenet/MessageIdentifiers.h>
 #include <Network/NetDevice.h>
 #include <Network/Definition.h>
 #include "ServerGame.h"
