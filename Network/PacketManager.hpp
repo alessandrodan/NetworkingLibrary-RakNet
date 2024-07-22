@@ -8,6 +8,13 @@
 
 namespace Net
 {
+    enum class EProcessPacketError : uint8_t
+    {
+        HEADER_NOT_FOUND,
+        SIZE_MISMATCH,
+        HANDLE_FAILED
+    };
+
     template <typename T>
     class CPacketManagerBase
     {
@@ -96,21 +103,13 @@ namespace Net
             if (packet->length == packetType->iPacketSize)
             {
                 if (!packetType->Handle(handler, packet, peer))
-                {
-                    std::cerr << "Failed to handle packet with header " << (unsigned)packet->data[0] << std::endl;
-                    //peer->SetPhase(PHASE_CLOSE);
-                }
+                    handler->ProcessPacketError(EProcessPacketError::HANDLE_FAILED, packet, peer);
             }
             else
-            {
-                std::cerr << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
-            }
+                handler->ProcessPacketError(EProcessPacketError::SIZE_MISMATCH, packet, peer);
         }
         else
-        {
-            std::cerr << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-            //peer->SetPhase(PHASE_CLOSE);
-        }
+            handler->ProcessPacketError(EProcessPacketError::HEADER_NOT_FOUND, packet, peer);
     }
 
     template<typename T>
@@ -122,20 +121,12 @@ namespace Net
             if (packet->length == packetType->iPacketSize)
             {
                 if (!packetType->Handle(handler, packet, nullptr))
-                {
-                    std::cerr << "Failed to handle packet with header " << (unsigned)packet->data[0] << std::endl;
-                    //peer->SetPhase(PHASE_CLOSE);
-                }
+                    handler->ProcessPacketError(EProcessPacketError::HANDLE_FAILED, packet);
             }
             else
-            {
-                std::cerr << "Packet size mismatch for header " << (unsigned)packet->data[0] << std::endl;
-            }
+                handler->ProcessPacketError(EProcessPacketError::SIZE_MISMATCH, packet);
         }
         else
-        {
-            std::cerr << "Wrong packet. id " << (unsigned)packet->data[0] << " packet length " << packet->length << " from " << packet->systemAddress.ToString() << std::endl;
-            //peer->SetPhase(PHASE_CLOSE);
-        }
+            handler->ProcessPacketError(EProcessPacketError::HEADER_NOT_FOUND, packet);
     }
 }

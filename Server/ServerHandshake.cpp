@@ -19,6 +19,26 @@ void ServerHandshake::LoadPacketHeaders()
 	m_packetHeader->Set(PacketCGHeader::HEADER_CG_HANDSHAKE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketCGHandshake), &ServerHandshake::RecvHandshake));
 }
 
+void ServerHandshake::ProcessPacketError(Net::EProcessPacketError errorType, SLNet::Packet* packet, Net::CAbstractPeer* peer)
+{
+	switch (errorType)
+	{
+		case EProcessPacketError::HEADER_NOT_FOUND:
+			std::cerr << "Header not found: " << (unsigned)packet->data[0] << std::endl;
+			peer->SetPhase(PHASE_CLOSE);
+			break;
+
+		case Net::EProcessPacketError::SIZE_MISMATCH:
+			std::cerr << "Size mismatch for header: " << (unsigned)packet->data[0] << std::endl;
+			peer->SetPhase(PHASE_CLOSE);
+			break;
+
+		case Net::EProcessPacketError::HANDLE_FAILED:
+			std::cerr << "Failed to handle packet with header: " << (unsigned)packet->data[0] << std::endl;
+			break;
+	}
+}
+
 bool ServerHandshake::RecvHandshake(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 {
 	CPeer* d = CPeerManager::ValidPeer(peer);

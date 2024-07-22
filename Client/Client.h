@@ -19,6 +19,7 @@ class Client : public Net::CAbstractEntityClient, public Net::CAbstractPacketCli
 	public:
 		void ProcessNet() override;
 		void LoadPacketHeaders() override;
+		void ProcessPacketError(Net::EProcessPacketError errorType, SLNet::Packet* packet) override;
 
 	public:
 		bool IsConnected();

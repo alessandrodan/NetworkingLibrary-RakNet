@@ -13,6 +13,7 @@ namespace Net
         public:
             virtual void ProcessRecv(SLNet::Packet* packet) = 0;
             virtual void Packet(const void* c_pvData, int iSize) = 0;
+            virtual void SetPhase(int phase) = 0;
     };
 
     inline CAbstractPeer::~CAbstractPeer() {}

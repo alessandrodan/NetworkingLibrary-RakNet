@@ -19,6 +19,26 @@ void ServerAuth::LoadPacketHeaders()
 	m_packetHeader->Set(PacketCGHeader::HEADER_CG_AUTH_REQUEST, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketCGAuthRequest), &ServerAuth::TestRecv));
 }
 
+void ServerAuth::ProcessPacketError(EProcessPacketError errorType, SLNet::Packet* packet, CAbstractPeer* peer)
+{
+	switch (errorType)
+	{
+		case EProcessPacketError::HEADER_NOT_FOUND:
+			std::cerr << "Header not found: " << (unsigned)packet->data[0] << std::endl;
+			peer->SetPhase(PHASE_CLOSE);
+			break;
+
+		case Net::EProcessPacketError::SIZE_MISMATCH:
+			std::cerr << "Size mismatch for header: " << (unsigned)packet->data[0] << std::endl;
+			peer->SetPhase(PHASE_CLOSE);
+			break;
+
+		case Net::EProcessPacketError::HANDLE_FAILED:
+			std::cerr << "Failed to handle packet with header: " << (unsigned)packet->data[0] << std::endl;
+			break;
+	}
+}
+
 bool ServerAuth::TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 {
 	CPeer* d = CPeerManager::ValidPeer(peer);

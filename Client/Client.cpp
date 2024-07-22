@@ -44,6 +44,26 @@ void Client::LoadPacketHeaders()
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_RESPONSE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCResponse), &Client::TestRecv));
 }
 
+void Client::ProcessPacketError(Net::EProcessPacketError errorType, SLNet::Packet* packet)
+{
+	switch (errorType)
+	{
+		case EProcessPacketError::HEADER_NOT_FOUND:
+			std::cerr << "Header not found: " << (unsigned)packet->data[0] << std::endl;
+			CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+			break;
+
+		case Net::EProcessPacketError::SIZE_MISMATCH:
+			std::cerr << "Size mismatch for header: " << (unsigned)packet->data[0] << std::endl;
+			CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+			break;
+
+		case Net::EProcessPacketError::HANDLE_FAILED:
+			std::cerr << "Failed to handle packet with header: " << (unsigned)packet->data[0] << std::endl;
+			break;
+	}
+}
+
 void Client::ProcessNet()
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())

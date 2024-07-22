@@ -11,6 +11,8 @@ namespace Net
         public:
             using PacketManager = CPacketManagerServer<TDerived>;
 
+            virtual void ProcessPacketError(EProcessPacketError errorType, SLNet::Packet* packet, CAbstractPeer* peer) = 0;
+
             CAbstractPacketServerHandler()
             {
                 m_packetHeader = std::make_unique<PacketManager>();
