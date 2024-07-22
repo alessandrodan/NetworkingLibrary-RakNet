@@ -1,16 +1,20 @@
 #pragma once
 
-#include <Network/AbstractEntity.h>
+#include <Network/AbstractEntityServer.hpp>
 #include <Network/AbstractPacketServerHandler.h>
 #include "PeerManager.h"
 
-class ServerMain : public Net::CAbstractEntity
+class ServerMain : public Net::CAbstractEntityServer
 {
 	public:
 		ServerMain() = default;
 		~ServerMain() = default;
 
-		bool Initialize(const char* c_szAddr, int port) override;
+	protected:
+		void __OnInitFail(int errorCode) override;
+		void __OnInitSuccess() override;
+
+	public:
 		void ProcessNet() override;
 
 	public:

@@ -13,7 +13,7 @@ int main()
 	}
 
 	ServerMain server;
-	if (server.Initialize("localhost", 8080))
+	if (server.Start("localhost", 8080))
 	{
 		while (true)
 		{

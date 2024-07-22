@@ -9,31 +9,15 @@
 
 using namespace Net;
 
-bool ServerMain::Initialize(const char* c_szAddr, int port)
+void ServerMain::__OnInitFail(int errorCode)
 {
-	SLNet::SocketDescriptor socketDescriptor;
-	strcpy(socketDescriptor.hostAddress, c_szAddr);
-	socketDescriptor.port = static_cast<unsigned short>(port);
-	socketDescriptor.socketFamily = AF_INET;
+	std::cout << "Failed to start server! Quitting - error code: " << errorCode << std::endl;
+}
 
-	const SLNet::StartupResult startupResult = CNetDevice::peer->Startup(SERVER_MAX_CONNECTIONS, &socketDescriptor, 1);
-	if (startupResult != SLNet::RAKNET_STARTED)
-	{
-		std::cout << "Failed to start server! Quitting - error code: " << startupResult << std::endl;
-		return false;
-	}
-
-	CNetDevice::peer->SetMaximumIncomingConnections(SERVER_MAX_INCOMING_CONNECTIONS);
-
-	CNetDevice::peer->SetIncomingPassword(0, 0);
-	CNetDevice::peer->SetTimeoutTime(10000, SLNet::UNASSIGNED_SYSTEM_ADDRESS);
-	CNetDevice::peer->SetOccasionalPing(true);
-	CNetDevice::peer->SetUnreliableTimeout(1000);
-
+void ServerMain::__OnInitSuccess()
+{
 	m_peerManager = std::make_unique<CPeerManager>();
 	std::cout << "Socket Listening..." << std::endl;
-
-	return true;
 }
 
 void ServerMain::ProcessNet()

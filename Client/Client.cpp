@@ -18,28 +18,23 @@ Client::Client()
 	srand(static_cast<unsigned int>(time(0)));
 }
 
-bool Client::Initialize(const char* c_szAddr, int port)
+void Client::__OnInitFail(int errorCode)
 {
-	SLNet::SocketDescriptor socketDescriptor;
-	const auto startupResult = CNetDevice::peer->Startup(CLIENT_MAX_CONNECTIONS, &socketDescriptor, 1);
-	if (startupResult != SLNet::RAKNET_STARTED)
-	{
-		std::cout << "Failed to start client! Quitting - error code: "<< startupResult << std::endl;
-		return false;
-	}
+	std::cout << "Failed to start client! Quitting - error code: " << errorCode << std::endl;
+}
 
-	const auto connectionAttemptResult = CNetDevice::peer->Connect(c_szAddr, port, 0, 0, 0, 0, CLIENT_CONNECTION_ATTEMPT_COUNT, CLIENT_TIME_BTW_SEND_CONNECTION_ATTEMPT_COUNT);
-	if (connectionAttemptResult != SLNet::CONNECTION_ATTEMPT_STARTED)
-	{
-		std::cout << "Failed to connect client! Quitting - error code: " << connectionAttemptResult << std::endl;
-		return false;
-	}
+void Client::__OnInitSuccess()
+{
+}
 
-	CNetDevice::peer->SetOccasionalPing(true);
+void Client::__OnConnectFail(int errorCode)
+{
+	std::cout << "Failed to connect client! Quitting - error code: " << errorCode << std::endl;
+}
 
-	std::cout << "socket connected to the server" << std::endl;
-
-    return true;
+void Client::__OnConnectSuccess()
+{
+	std::cout << "Connection request was sent successfully" << std::endl;
 }
 
 void Client::LoadPacketHeaders()

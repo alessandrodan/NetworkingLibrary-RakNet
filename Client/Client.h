@@ -1,18 +1,23 @@
 #pragma once
 
-#include <Network/AbstractEntity.h>
+#include <Network/AbstractEntityClient.hpp>
 #include <Network/AbstractPacketClientHandler.h>
 #include <Network/PacketManager.hpp>
 
-class Client : public Net::CAbstractEntity, public Net::CAbstractPacketClientHandler<Client>
+class Client : public Net::CAbstractEntityClient, public Net::CAbstractPacketClientHandler<Client>
 {
 	public:
 		Client();
 		~Client() = default;
 
-		bool Initialize(const char* c_szAddr, int port) override;
-		void ProcessNet() override;
+	protected:
+		void __OnInitFail(int errorCode) override;
+		void __OnInitSuccess() override;
+		void __OnConnectFail(int errorCode) override;
+		void __OnConnectSuccess() override;
 
+	public:
+		void ProcessNet() override;
 		void LoadPacketHeaders() override;
 
 	public:

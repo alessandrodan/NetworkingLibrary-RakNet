@@ -12,6 +12,8 @@
     <ClInclude Include="AbstractPacketClientHandler.h" />
     <ClInclude Include="AbstractPeer.h" />
     <ClInclude Include="PacketIO.hpp" />
+    <ClInclude Include="AbstractEntityClient.hpp" />
+    <ClInclude Include="AbstractEntityServer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StdAfx.cpp" />

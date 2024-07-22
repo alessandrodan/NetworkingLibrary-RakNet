@@ -13,7 +13,7 @@ int main()
 	}
 
 	Client client;
-    if (client.Initialize("localhost", 8080))
+    if (client.Start("localhost", 8080))
     {
         while (true)
         {
