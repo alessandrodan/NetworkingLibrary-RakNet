@@ -9,7 +9,8 @@ namespace Net
 	{
 		public:
 			static void Destroy();
-			static void CloseConnection();
+			static bool IsConnectedToSystem(const AddressOrGUID systemIdentifier);
+			static void CloseConnection(const AddressOrGUID systemIdentifier, bool sendDisconnectionNotification);
 			static bool Create();
 
 			static Interface* peer;

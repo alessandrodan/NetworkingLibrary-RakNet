@@ -57,13 +57,7 @@ CPeer::~CPeer()
 
 	if (m_guid != Net::UNASSIGNED_SYSTEM_GUID)
 	{
-		const auto connectionState = Net::CNetDevice::peer->GetConnectionState(m_guid);
-		if (connectionState == Net::ConnectionState::IS_CONNECTED)
-		{
-			std::cout << "SYSTEM: closing socket. DESC #" << m_guid.ToString() << std::endl;
-			Net::CNetDevice::peer->CloseConnection(m_guid, false);
-		}
-
+		Net::CNetDevice::CloseConnection(m_guid, true);
 		m_guid = Net::UNASSIGNED_SYSTEM_GUID;
 	}
 }

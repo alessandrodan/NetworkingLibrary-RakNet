@@ -42,7 +42,7 @@ int main()
             }
         }
 
-		Net::CNetDevice::CloseConnection();
+		Net::CNetDevice::CloseConnection(Net::CNetDevice::peer->GetSystemAddressFromIndex(0), true);
     }
 
 	Net::CNetDevice::Destroy();

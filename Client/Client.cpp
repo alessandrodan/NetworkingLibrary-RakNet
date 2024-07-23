@@ -48,12 +48,12 @@ void Client::ProcessPacketError(Net::EProcessPacketError errorType, SLNet::Packe
 	{
 		case EProcessPacketError::HEADER_NOT_FOUND:
 			std::cerr << "Header not found: " << (unsigned)packet->data[0] << std::endl;
-			CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+			CNetDevice::CloseConnection(packet->systemAddress, true);
 			break;
 
 		case Net::EProcessPacketError::SIZE_MISMATCH:
 			std::cerr << "Size mismatch for header: " << (unsigned)packet->data[0] << std::endl;
-			CNetDevice::peer->CloseConnection(packet->systemAddress, true);
+			CNetDevice::CloseConnection(packet->systemAddress, true);
 			break;
 
 		case Net::EProcessPacketError::HANDLE_FAILED:

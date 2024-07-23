@@ -11,10 +11,22 @@ namespace Net
 		Interface::DestroyInstance(peer);
 	}
 
-	void CNetDevice::CloseConnection()
+	void CNetDevice::CloseConnection(const AddressOrGUID systemIdentifier, bool sendDisconnectionNotification)
 	{
-		if (auto target = peer->GetSystemAddressFromIndex(0); target != Net::UNASSIGNED_SYSTEM_ADDRESS)
-			peer->CloseConnection(target, true, 0, IMMEDIATE_PRIORITY);
+		if (CNetDevice::peer->GetConnectionState(systemIdentifier) == ConnectionState::IS_CONNECTED)
+		{
+			peer->CloseConnection(
+				systemIdentifier,
+				sendDisconnectionNotification,
+				0,
+				sendDisconnectionNotification ? HIGH_PRIORITY : LOW_PRIORITY
+			);
+		}
+	}
+
+	bool CNetDevice::IsConnectedToSystem(const AddressOrGUID systemIdentifier)
+	{
+		return CNetDevice::peer->GetConnectionState(systemIdentifier) == ConnectionState::IS_CONNECTED;
 	}
 
 	bool CNetDevice::Create()

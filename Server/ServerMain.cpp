@@ -35,31 +35,41 @@ void ServerMain::ProcessNet()
 
 			case ID_DISCONNECTION_NOTIFICATION:
 			{
+				std::cout << "Client Disconnected: " << packet->systemAddress.ToString() << std::endl;
+
 				const auto peer = m_peerManager->GetPeer(packet->guid);
 				if (!peer)
 				{
-					std::cerr << "Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
-					CNetDevice::peer->CloseConnection(packet->systemAddress, false);
+					if (CNetDevice::IsConnectedToSystem(packet->systemAddress))
+					{
+						std::cerr << "ID_DISCONNECTION_NOTIFICATION - Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
+						CNetDevice::CloseConnection(packet->systemAddress, false);
+					}
+
 					return;
 				}
 
 				peer->SetPhase(PHASE_CLOSE);
-				std::cout << "Client Disconnected: " << packet->systemAddress.ToString() << std::endl;
 			}
 			break;
 
 			case ID_CONNECTION_LOST:
 			{
+				std::cout << "Client Connection lost: " << packet->systemAddress.ToString() << std::endl;
+
 				const auto peer = m_peerManager->GetPeer(packet->guid);
 				if (!peer)
 				{
-					std::cerr << "Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
-					CNetDevice::peer->CloseConnection(packet->systemAddress, false);
+					if (CNetDevice::IsConnectedToSystem(packet->systemAddress))
+					{
+						std::cerr << "ID_CONNECTION_LOST - Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
+						CNetDevice::CloseConnection(packet->systemAddress, false);
+					}
+
 					return;
 				}
 
 				peer->SetPhase(PHASE_CLOSE);
-				std::cout << "Client Connection lost: " << packet->systemAddress.ToString() << std::endl;
 			}
 			break;
 
@@ -68,8 +78,8 @@ void ServerMain::ProcessNet()
 				const auto peer = m_peerManager->GetPeer(packet->guid);
 				if (!peer)
 				{
-					std::cerr << "Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
-					CNetDevice::peer->CloseConnection(packet->systemAddress, false);
+					std::cerr << "default - Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
+					CNetDevice::CloseConnection(packet->systemAddress, false);
 					return;
 				}
 

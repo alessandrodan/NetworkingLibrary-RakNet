@@ -79,7 +79,7 @@ void CPeerManager::AcceptPeer(Net::GUID guid)
 	if (m_iPeerConnected >= SERVER_MAX_INCOMING_CONNECTIONS)
 	{
 		std::cerr << "max connection reached. MAX_ALLOW_USER = %d" << SERVER_MAX_INCOMING_CONNECTIONS;
-        CNetDevice::peer->CloseConnection(guid, true, 0, HIGH_PRIORITY);
+        CNetDevice::CloseConnection(guid, true);
 		return;
 	}
 
