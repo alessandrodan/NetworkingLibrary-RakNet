@@ -36,7 +36,7 @@ uint32_t get_dword_time()
 
 CPeer::CPeer()
 {
-	m_guid = SLNet::UNASSIGNED_RAKNET_GUID;
+	m_guid = Net::UNASSIGNED_SYSTEM_GUID;
 	m_dwHandshake = 0;
 	m_dwHandle = 0;
 	m_iPhase = PHASE_CLOSE;
@@ -55,20 +55,20 @@ CPeer::~CPeer()
 
 	m_bDestroyed = true;
 
-	if (m_guid != SLNet::UNASSIGNED_RAKNET_GUID)
+	if (m_guid != Net::UNASSIGNED_SYSTEM_GUID)
 	{
-		const SLNet::ConnectionState connectionState = Net::CNetDevice::peer->GetConnectionState(m_guid);
-		if (connectionState == SLNet::IS_CONNECTED)
+		const auto connectionState = Net::CNetDevice::peer->GetConnectionState(m_guid);
+		if (connectionState == Net::ConnectionState::IS_CONNECTED)
 		{
 			std::cout << "SYSTEM: closing socket. DESC #" << m_guid.ToString() << std::endl;
 			Net::CNetDevice::peer->CloseConnection(m_guid, false);
 		}
 
-		m_guid = SLNet::UNASSIGNED_RAKNET_GUID;
+		m_guid = Net::UNASSIGNED_SYSTEM_GUID;
 	}
 }
 
-void CPeer::Setup(SLNet::RakNetGUID guid, int handleCount, uint32_t handshake)
+void CPeer::Setup(Net::GUID guid, int handleCount, uint32_t handshake)
 {
 	m_guid = guid;
 	m_dwHandle = handleCount;
@@ -103,7 +103,7 @@ void CPeer::Packet(const void* c_pvData, int iSize)
 	if (m_iPhase == PHASE_CLOSE)
 		return;
 
-	if (m_guid == SLNet::UNASSIGNED_RAKNET_GUID)
+	if (m_guid == Net::UNASSIGNED_SYSTEM_GUID)
 		return;
 
 	Net::CPacketIO::SendPacket(c_pvData, iSize, m_guid);

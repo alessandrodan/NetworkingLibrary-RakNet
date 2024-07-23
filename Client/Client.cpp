@@ -114,7 +114,7 @@ void Client::SendHandshake(uint32_t dwHandshake, uint32_t dwTime, long lDelta)
 	packet.dwTime = dwTime;
 	packet.lDelta = lDelta;
 
-	Net::CPacketIO::SendPacket(&packet, sizeof(packet), SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	Net::CPacketIO::SendPacket(&packet, sizeof(packet), Net::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 void Client::SendLogin()
@@ -126,7 +126,7 @@ void Client::SendLogin()
 	const char* passwords[] = { "password1", "password12", "password123" };
 	strcpy(packet.password, passwords[rand() % 3]);
 
-	Net::CPacketIO::SendPacket(&packet, sizeof(packet), SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	Net::CPacketIO::SendPacket(&packet, sizeof(packet), Net::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 void Client::TestSend()
@@ -134,7 +134,7 @@ void Client::TestSend()
 	TPacketCGAction1 packet;
 	packet.numIntero = 5;
 
-	Net::CPacketIO::SendPacket(&packet, sizeof(packet), SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	Net::CPacketIO::SendPacket(&packet, sizeof(packet), Net::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 bool Client::RecvPhase(SLNet::Packet* packet)

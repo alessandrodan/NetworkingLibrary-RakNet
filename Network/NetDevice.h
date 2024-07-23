@@ -1,6 +1,7 @@
 #pragma once
 
 #include "slikenet/peerinterface.h"
+#include "Definition.h"
 
 namespace Net
 {
@@ -11,6 +12,6 @@ namespace Net
 			static void CloseConnection();
 			static bool Create();
 
-			static SLNet::RakPeerInterface* peer;
+			static Interface* peer;
 	};
 }

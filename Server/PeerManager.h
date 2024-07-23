@@ -4,6 +4,7 @@
 #include <memory>
 #include <set>
 #include <unordered_map>
+#include <Network/Definition.h>
 
 class CPeerManager
 {
@@ -15,8 +16,8 @@ class CPeerManager
 		void DestroyClosed();
 		void DestroyDesc(CPeer* d, bool skipMapErase = false);
 
-		void AcceptPeer(SLNet::RakNetGUID guid);
-		std::shared_ptr<CPeer> GetPeer(SLNet::RakNetGUID guid);
+		void AcceptPeer(Net::GUID guid);
+		std::shared_ptr<CPeer> GetPeer(Net::GUID guid);
 		std::shared_ptr<CPeer> GetFirstPeer();
 
 		static CPeer* ValidPeer(Net::CAbstractPeer* peer);

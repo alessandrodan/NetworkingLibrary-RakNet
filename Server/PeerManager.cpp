@@ -2,7 +2,6 @@
 #include "PeerManager.h"
 #include <iostream>
 #include <Network/NetDevice.h>
-#include <Network/Definition.h>
 #include <vector>
 #include "Packet.h"
 
@@ -68,14 +67,14 @@ void CPeerManager::DestroyDesc(CPeer* d, bool skipMapErase)
         if (d->GetHandshake())
             m_setHandshake.erase(d->GetHandshake());
 
-        if (d->GetGUID() != SLNet::UNASSIGNED_RAKNET_GUID)
+        if (d->GetGUID() != Net::UNASSIGNED_SYSTEM_GUID)
             m_mapPeer.erase(d->GetGUID().ToUint32(d->GetGUID()));
     }
 
     --m_iPeerConnected;
 }
 
-void CPeerManager::AcceptPeer(SLNet::RakNetGUID guid)
+void CPeerManager::AcceptPeer(Net::GUID guid)
 {
 	if (m_iPeerConnected >= SERVER_MAX_INCOMING_CONNECTIONS)
 	{
@@ -94,7 +93,7 @@ void CPeerManager::AcceptPeer(SLNet::RakNetGUID guid)
     ++m_iPeerConnected;
 }
 
-std::shared_ptr<CPeer> CPeerManager::GetPeer(SLNet::RakNetGUID guid)
+std::shared_ptr<CPeer> CPeerManager::GetPeer(Net::GUID guid)
 {
     const auto it = m_mapPeer.find(guid.ToUint32(guid));
     if (it == m_mapPeer.end())

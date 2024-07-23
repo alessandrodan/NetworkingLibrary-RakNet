@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Network/AbstractPacketServerHandler.h>
+#include <Network/Definition.h>
 #include "ServerHandshake.h"
 #include "ServerAuth.h"
 #include "ServerGame.h"
@@ -16,7 +17,7 @@ class CPeer : public Net::CAbstractPeer
 		void Packet(const void* c_pvData, int iSize) override;
 		void SetPhase(int phase) override;
 
-		void Setup(SLNet::RakNetGUID guid, int handleCount, uint32_t handshake);
+		void Setup(Net::GUID guid, int handleCount, uint32_t handshake);
 		void StartHandshake(uint32_t handshake);
 
 		void SendHandshake(uint32_t dwCurTime, long lNewDelta);
@@ -24,11 +25,11 @@ class CPeer : public Net::CAbstractPeer
 
 
 		uint32_t GetHandshake() const { return m_dwHandshake; }
-		SLNet::RakNetGUID GetGUID() const { return m_guid; }
+		Net::GUID GetGUID() const { return m_guid; }
 		bool			IsPhase(int phase) const { return m_iPhase == phase ? true : false; }
 
 	private:
-		SLNet::RakNetGUID m_guid;
+		Net::GUID m_guid;
 		int			m_dwHandle;
 		uint32_t			m_dwHandshake;
 		int				m_iPhase;

@@ -30,9 +30,9 @@ namespace Net
 		protected:
 			bool __Initialize(const char* c_szAddr, int port) override
 			{
-				SLNet::SocketDescriptor socketDescriptor;
+				Socket socketDescriptor;
 				const auto startupResult = CNetDevice::peer->Startup(CLIENT_MAX_CONNECTIONS, &socketDescriptor, 1);
-				if (startupResult != SLNet::RAKNET_STARTED)
+				if (startupResult != StartResult::RAKNET_STARTED)
 				{
 					__OnInitFail(startupResult);
 					return false;
@@ -45,7 +45,7 @@ namespace Net
 			bool __Connect(const char* c_szAddr, int port)
 			{
 				const auto connectionAttemptResult = CNetDevice::peer->Connect(c_szAddr, port, 0, 0, 0, 0, CLIENT_CONNECTION_ATTEMPT_COUNT, CLIENT_TIME_BTW_SEND_CONNECTION_ATTEMPT_COUNT);
-				if (connectionAttemptResult != SLNet::CONNECTION_ATTEMPT_STARTED)
+				if (connectionAttemptResult != ConnectionAttemptResult::CONNECTION_ATTEMPT_STARTED)
 				{
 					__OnConnectFail(connectionAttemptResult);
 					return false;
