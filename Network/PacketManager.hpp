@@ -24,7 +24,7 @@ namespace Net
             typedef struct SPacketType
             {
                 int iPacketSize;
-                virtual bool Handle(T* instance, SLNet::Packet* packet, Net::CAbstractPeer* peer) = 0;
+                virtual bool Handle(T* instance, NetPacket* packet, Net::CAbstractPeer* peer) = 0;
 
                 SPacketType(int iSize = 0) : iPacketSize(iSize) {}
                 virtual ~SPacketType() = default;
@@ -54,7 +54,7 @@ namespace Net
     class CPacketManagerClient : public CPacketManagerBase<T>
     {
         public:
-            using PacketHandler = bool (T::*)(SLNet::Packet*);
+            using PacketHandler = bool (T::*)(NetPacket*);
 
             typedef struct SPacketType : public CPacketManagerBase<T>::TPacketType
             {
@@ -65,7 +65,7 @@ namespace Net
                 {
                 }
 
-                bool Handle(T* instance, SLNet::Packet* packet, Net::CAbstractPeer* peer) override
+                bool Handle(T* instance, NetPacket* packet, Net::CAbstractPeer* peer) override
                 {
                     return (instance->*packetHandler)(packet);
                 }
@@ -76,7 +76,7 @@ namespace Net
     class CPacketManagerServer : public CPacketManagerBase<T>
     {
         public:
-            using PacketHandler = bool (T::*)(SLNet::Packet*, Net::CAbstractPeer*);
+            using PacketHandler = bool (T::*)(NetPacket*, Net::CAbstractPeer*);
 
             typedef struct SPacketType : public CPacketManagerBase<T>::TPacketType
             {
@@ -87,7 +87,7 @@ namespace Net
                 {
                 }
 
-                bool Handle(T* instance, SLNet::Packet* packet, Net::CAbstractPeer* peer) override
+                bool Handle(T* instance, NetPacket* packet, Net::CAbstractPeer* peer) override
                 {
                     return (instance->*packetHandler)(packet, peer);
                 }
@@ -95,10 +95,10 @@ namespace Net
     };
 
     template<typename T>
-    void ProcessPacket(T* handler, CPacketManagerBase<T>& packetHeader, SLNet::Packet* packet, CAbstractPeer* peer)
+    void ProcessPacket(T* handler, CPacketManagerBase<T>& packetHeader, NetPacket* packet, CAbstractPeer* peer)
     {
         typename CPacketManagerBase<T>::TPacketType* packetType;
-        if (packetHeader.Get(packet->data[0], packetType))
+        if (packetHeader.Get(packet->header, packetType))
         {
             if (packet->length == packetType->iPacketSize)
             {
@@ -113,10 +113,10 @@ namespace Net
     }
 
     template<typename T>
-    void ProcessPacket(T* handler, CPacketManagerBase<T>& packetHeader, SLNet::Packet* packet)
+    void ProcessPacket(T* handler, CPacketManagerBase<T>& packetHeader, NetPacket* packet)
     {
         typename CPacketManagerBase<T>::TPacketType* packetType;
-        if (packetHeader.Get(packet->data[0], packetType))
+        if (packetHeader.Get(packet->header, packetType))
         {
             if (packet->length == packetType->iPacketSize)
             {

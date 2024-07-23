@@ -20,27 +20,27 @@ void ServerGame::LoadPacketHeaders()
 	m_packetHeader->Set(PacketCGHeader::HEADER_CG_ACTION1, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketCGAction1), &ServerGame::TestRecv));
 }
 
-void ServerGame::ProcessPacketError(Net::EProcessPacketError errorType, SLNet::Packet* packet, Net::CAbstractPeer* peer)
+void ServerGame::ProcessPacketError(Net::EProcessPacketError errorType, NetPacket* packet, Net::CAbstractPeer* peer)
 {
 	switch (errorType)
 	{
 		case EProcessPacketError::HEADER_NOT_FOUND:
-			std::cerr << "Header not found: " << (unsigned)packet->data[0] << std::endl;
+			std::cerr << "Header not found: " << packet->header << std::endl;
 			peer->SetPhase(PHASE_CLOSE);
 			break;
 
 		case Net::EProcessPacketError::SIZE_MISMATCH:
-			std::cerr << "Size mismatch for header: " << (unsigned)packet->data[0] << std::endl;
+			std::cerr << "Size mismatch for header: " << packet->header << std::endl;
 			peer->SetPhase(PHASE_CLOSE);
 			break;
 
 		case Net::EProcessPacketError::HANDLE_FAILED:
-			std::cerr << "Failed to handle packet with header: " << (unsigned)packet->data[0] << std::endl;
+			std::cerr << "Failed to handle packet with header: " << packet->header << std::endl;
 			break;
 	}
 }
 
-bool ServerGame::TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer)
+bool ServerGame::TestRecv(NetPacket* packet, Net::CAbstractPeer* peer)
 {
 	CPeer* d = CPeerManager::ValidPeer(peer);
 	if (!d)
@@ -56,7 +56,7 @@ bool ServerGame::TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer)
 	return true;
 }
 
-bool ServerGame::TestSend(SLNet::Packet* packet, Net::CAbstractPeer* peer)
+bool ServerGame::TestSend(NetPacket* packet, Net::CAbstractPeer* peer)
 {
 	if (!peer)
 		return false;

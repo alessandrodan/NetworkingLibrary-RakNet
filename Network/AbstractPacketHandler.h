@@ -21,7 +21,7 @@ namespace Net
             virtual ~CAbstractPacketClientHandlerBase() = 0;
 
         public:
-            virtual void Process(SLNet::Packet* packet) = 0;
+            virtual void Process(NetPacket* packet) = 0;
     };
 
     class CAbstractPacketServerHandlerBase : public CAbstractPacketHandler
@@ -31,7 +31,7 @@ namespace Net
             virtual ~CAbstractPacketServerHandlerBase() = 0;
 
         public:
-            virtual void Process(CAbstractPeer* peer, SLNet::Packet* packet) = 0;
+            virtual void Process(CAbstractPeer* peer, NetPacket* packet) = 0;
     };
 
     inline CAbstractPacketHandler::~CAbstractPacketHandler() {}

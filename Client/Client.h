@@ -19,7 +19,7 @@ class Client : public Net::CAbstractEntityClient, public Net::CAbstractPacketCli
 	public:
 		void ProcessNet() override;
 		void LoadPacketHeaders() override;
-		void ProcessPacketError(Net::EProcessPacketError errorType, SLNet::Packet* packet) override;
+		void ProcessPacketError(Net::EProcessPacketError errorType, Net::NetPacket* packet) override;
 
 	public:
 		bool IsConnected();
@@ -27,9 +27,9 @@ class Client : public Net::CAbstractEntityClient, public Net::CAbstractPacketCli
 		void SendHandshake(uint32_t dwHandshake, uint32_t dwTime, long lDelta);
 		void SendLogin();
 		void TestSend();
-		bool RecvPhase(SLNet::Packet* packet);
-		bool RecvHandshake(SLNet::Packet* packet);
-		bool TestRecv(SLNet::Packet* packet);
+		bool RecvPhase(Net::NetPacket* packet);
+		bool RecvHandshake(Net::NetPacket* packet);
+		bool TestRecv(Net::NetPacket* packet);
 
 	private:
 		bool isConnected;

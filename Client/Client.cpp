@@ -42,22 +42,22 @@ void Client::LoadPacketHeaders()
 	m_packetHeader->Set(PacketGCHeader::HEADER_GC_RESPONSE, std::make_unique<PacketManager::TPacketType>(sizeof(TPacketGCResponse), &Client::TestRecv));
 }
 
-void Client::ProcessPacketError(Net::EProcessPacketError errorType, SLNet::Packet* packet)
+void Client::ProcessPacketError(Net::EProcessPacketError errorType, NetPacket* packet)
 {
 	switch (errorType)
 	{
 		case EProcessPacketError::HEADER_NOT_FOUND:
-			std::cerr << "Header not found: " << (unsigned)packet->data[0] << std::endl;
+			std::cerr << "Header not found: " << packet->header << std::endl;
 			CNetDevice::CloseConnection(packet->systemAddress, true);
 			break;
 
 		case Net::EProcessPacketError::SIZE_MISMATCH:
-			std::cerr << "Size mismatch for header: " << (unsigned)packet->data[0] << std::endl;
+			std::cerr << "Size mismatch for header: " << packet->header << std::endl;
 			CNetDevice::CloseConnection(packet->systemAddress, true);
 			break;
 
 		case Net::EProcessPacketError::HANDLE_FAILED:
-			std::cerr << "Failed to handle packet with header: " << (unsigned)packet->data[0] << std::endl;
+			std::cerr << "Failed to handle packet with header: " << packet->header << std::endl;
 			break;
 	}
 }
@@ -66,7 +66,10 @@ void Client::ProcessNet()
 {
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{
-		switch (packet->data[0])
+		NetPacket netPacket;
+		ConvertToNetPacket(packet, &netPacket);
+
+		switch (netPacket.header)
 		{
 			case ID_CONNECTION_REQUEST_ACCEPTED:
 				std::cout << "Our connection request has been accepted" << std::endl;
@@ -95,7 +98,7 @@ void Client::ProcessNet()
 				break;
 
 			default:
-				Process(packet);
+				Process(&netPacket);
 		}
 	}
 }
@@ -137,7 +140,7 @@ void Client::TestSend()
 	Net::CPacketIO::SendPacket(&packet, sizeof(packet), Net::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
-bool Client::RecvPhase(SLNet::Packet* packet)
+bool Client::RecvPhase(NetPacket* packet)
 {
 	TPacketGCPhase phase;
 	if (!CPacketIO::ReadPacketData(packet, phase))
@@ -154,7 +157,7 @@ bool Client::RecvPhase(SLNet::Packet* packet)
 	return true;
 }
 
-bool Client::RecvHandshake(SLNet::Packet* packet)
+bool Client::RecvHandshake(NetPacket* packet)
 {
 	TPacketGCHandshake handshake;
 	if (!CPacketIO::ReadPacketData(packet, handshake))
@@ -168,7 +171,7 @@ bool Client::RecvHandshake(SLNet::Packet* packet)
 	return true;
 }
 
-bool Client::TestRecv(SLNet::Packet* packet)
+bool Client::TestRecv(NetPacket* packet)
 {
 	TPacketGCResponse response;
 	if (!CPacketIO::ReadPacketData(packet, response))

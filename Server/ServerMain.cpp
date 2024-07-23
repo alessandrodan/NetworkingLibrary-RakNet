@@ -24,26 +24,29 @@ void ServerMain::ProcessNet()
 
 	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
 	{
-		switch (packet->data[0])
+		NetPacket netPacket;
+		ConvertToNetPacket(packet, &netPacket);
+
+		switch (netPacket.header)
 		{
 			case ID_NEW_INCOMING_CONNECTION:
 			{
-				m_peerManager->AcceptPeer(packet->guid);
-				std::cout << "New incoming connection: " << packet->systemAddress.ToString() << "\t. GUID (String): " << packet->guid.ToString() << "GUID (Int): " << packet->guid.ToUint32(packet->guid) << std::endl;
+				m_peerManager->AcceptPeer(netPacket.guid);
+				std::cout << "New incoming connection: " << netPacket.systemAddress.ToString() << "\t. GUID (String): " << netPacket.guid.ToString() << "GUID (Int): " << netPacket.guid.ToUint32(netPacket.guid) << std::endl;
 			}
 			break;
 
 			case ID_DISCONNECTION_NOTIFICATION:
 			{
-				std::cout << "Client Disconnected: " << packet->systemAddress.ToString() << std::endl;
+				std::cout << "Client Disconnected: " << netPacket.systemAddress.ToString() << std::endl;
 
-				const auto peer = m_peerManager->GetPeer(packet->guid);
+				const auto peer = m_peerManager->GetPeer(netPacket.guid);
 				if (!peer)
 				{
-					if (CNetDevice::IsConnectedToSystem(packet->systemAddress))
+					if (CNetDevice::IsConnectedToSystem(netPacket.systemAddress))
 					{
-						std::cerr << "ID_DISCONNECTION_NOTIFICATION - Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
-						CNetDevice::CloseConnection(packet->systemAddress, false);
+						std::cerr << "ID_DISCONNECTION_NOTIFICATION - Peer not recognized. String: " << netPacket.guid.ToString() << "Int: " << netPacket.guid.ToUint32(netPacket.guid) << std::endl;
+						CNetDevice::CloseConnection(netPacket.systemAddress, false);
 					}
 
 					return;
@@ -55,15 +58,15 @@ void ServerMain::ProcessNet()
 
 			case ID_CONNECTION_LOST:
 			{
-				std::cout << "Client Connection lost: " << packet->systemAddress.ToString() << std::endl;
+				std::cout << "Client Connection lost: " << netPacket.systemAddress.ToString() << std::endl;
 
-				const auto peer = m_peerManager->GetPeer(packet->guid);
+				const auto peer = m_peerManager->GetPeer(netPacket.guid);
 				if (!peer)
 				{
-					if (CNetDevice::IsConnectedToSystem(packet->systemAddress))
+					if (CNetDevice::IsConnectedToSystem(netPacket.systemAddress))
 					{
-						std::cerr << "ID_CONNECTION_LOST - Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
-						CNetDevice::CloseConnection(packet->systemAddress, false);
+						std::cerr << "ID_CONNECTION_LOST - Peer not recognized. String: " << netPacket.guid.ToString() << "Int: " << netPacket.guid.ToUint32(netPacket.guid) << std::endl;
+						CNetDevice::CloseConnection(netPacket.systemAddress, false);
 					}
 
 					return;
@@ -75,15 +78,15 @@ void ServerMain::ProcessNet()
 
 			default:
 			{
-				const auto peer = m_peerManager->GetPeer(packet->guid);
+				const auto peer = m_peerManager->GetPeer(netPacket.guid);
 				if (!peer)
 				{
-					std::cerr << "default - Peer not recognized. String: " << packet->guid.ToString() << "Int: " << packet->guid.ToUint32(packet->guid) << std::endl;
-					CNetDevice::CloseConnection(packet->systemAddress, false);
+					std::cerr << "default - Peer not recognized. String: " << netPacket.guid.ToString() << "Int: " << netPacket.guid.ToUint32(netPacket.guid) << std::endl;
+					CNetDevice::CloseConnection(netPacket.systemAddress, false);
 					return;
 				}
 
-				peer->ProcessRecv(packet);
+				peer->ProcessRecv(&netPacket);
 			}
 		}
 	}

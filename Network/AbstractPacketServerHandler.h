@@ -11,7 +11,7 @@ namespace Net
         public:
             using PacketManager = CPacketManagerServer<TDerived>;
 
-            virtual void ProcessPacketError(EProcessPacketError errorType, SLNet::Packet* packet, CAbstractPeer* peer) = 0;
+            virtual void ProcessPacketError(EProcessPacketError errorType, NetPacket* packet, CAbstractPeer* peer) = 0;
 
             CAbstractPacketServerHandler()
             {
@@ -23,7 +23,7 @@ namespace Net
                 static_cast<TDerived*>(this)->LoadPacketHeaders();
             }
 
-            void Process(CAbstractPeer* peer, SLNet::Packet* packet) override
+            void Process(CAbstractPeer* peer, NetPacket* packet) override
             {
                 ProcessPacket(static_cast<TDerived*>(this), *m_packetHeader, packet, peer);
             }

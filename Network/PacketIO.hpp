@@ -9,7 +9,7 @@ namespace Net
     {
         public:
             template <typename PacketStruct>
-            static bool ReadPacketData(SLNet::Packet* packet, PacketStruct& outData)
+            static bool ReadPacketData(NetPacket* packet, PacketStruct& outData)
             {
                 if (!packet)
                     return false;

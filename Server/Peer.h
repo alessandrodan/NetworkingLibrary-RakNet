@@ -13,7 +13,7 @@ class CPeer : public Net::CAbstractPeer
 		~CPeer();
 
 	public:
-		void ProcessRecv(SLNet::Packet* packet) override;
+		void ProcessRecv(Net::NetPacket* packet) override;
 		void Packet(const void* c_pvData, int iSize) override;
 		void SetPhase(int phase) override;
 

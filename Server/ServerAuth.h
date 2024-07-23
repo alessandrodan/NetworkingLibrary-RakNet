@@ -12,9 +12,9 @@ class ServerAuth : public Net::CAbstractPacketServerHandler<ServerAuth>
 
 	public:
 		void LoadPacketHeaders() override;
-		void ProcessPacketError(Net::EProcessPacketError errorType, SLNet::Packet* packet, Net::CAbstractPeer* peer) override;
+		void ProcessPacketError(Net::EProcessPacketError errorType, Net::NetPacket* packet, Net::CAbstractPeer* peer) override;
 
 	public:
-		bool TestRecv(SLNet::Packet* packet, Net::CAbstractPeer* peer);
+		bool TestRecv(Net::NetPacket* packet, Net::CAbstractPeer* peer);
 
 };
