@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <slikenet/MessageIdentifiers.h>
 #include <slikenet/types.h>
+#include "NetDevice.h"
 #include "Definition.h"
 
 namespace Net
@@ -27,5 +28,15 @@ namespace Net
 		netPacket->header = packet->data[0];
 		netPacket->length = packet->length;
 		netPacket->data = packet->data;
+	}
+
+	inline SLNet::Packet* ReceivePacket()
+	{
+		return CNetDevice::peer->Receive();
+	}
+
+	inline void DeallocatePacket(SLNet::Packet* packet)
+	{
+		CNetDevice::peer->DeallocatePacket(packet);
 	}
 }

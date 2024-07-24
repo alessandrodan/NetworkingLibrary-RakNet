@@ -22,7 +22,7 @@ void ServerMain::ProcessNet()
 {
 	m_peerManager->DestroyClosed();
 
-	for (SLNet::Packet* packet = CNetDevice::peer->Receive(); packet; CNetDevice::peer->DeallocatePacket(packet), packet = CNetDevice::peer->Receive())
+	for (auto packet = ReceivePacket(); packet; DeallocatePacket(packet), packet = ReceivePacket())
 	{
 		NetPacket netPacket;
 		ConvertToNetPacket(packet, &netPacket);
