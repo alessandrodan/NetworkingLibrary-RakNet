@@ -30,7 +30,7 @@ namespace Net
                 Message msgOut(iSize);
                 msgOut.Write((const char*)c_pvData, iSize);
 
-                CNetDevice::peer->Send(&msgOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, systemIdentifier, broadcast);
+                CNetDevice::Send(&msgOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, systemIdentifier, broadcast);
             }
     };
 }

@@ -30,11 +30,11 @@ namespace Net
 
 	inline SLNet::Packet* ReceivePacket()
 	{
-		return CNetDevice::peer->Receive();
+		return CNetDevice::Receive();
 	}
 
 	inline void DeallocatePacket(SLNet::Packet* packet)
 	{
-		CNetDevice::peer->DeallocatePacket(packet);
+		CNetDevice::DeallocatePacket(packet);
 	}
 }

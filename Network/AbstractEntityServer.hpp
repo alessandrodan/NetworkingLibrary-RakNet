@@ -31,7 +31,7 @@ namespace Net
 				socketDescriptor.port = static_cast<unsigned short>(port);
 				socketDescriptor.socketFamily = AF_INET;
 
-				const auto startupResult = CNetDevice::peer->Startup(SERVER_MAX_CONNECTIONS, &socketDescriptor, 1);
+				const auto startupResult = CNetDevice::Startup(SERVER_MAX_CONNECTIONS, &socketDescriptor, 1);
 				if (startupResult != StartResult::RAKNET_STARTED)
 				{
 					__OnInitFail(startupResult);
@@ -44,11 +44,7 @@ namespace Net
 
 			void __Configure()
 			{
-				CNetDevice::peer->SetMaximumIncomingConnections(SERVER_MAX_INCOMING_CONNECTIONS);
-				CNetDevice::peer->SetIncomingPassword(0, 0);
-				CNetDevice::peer->SetTimeoutTime(10000, Net::UNASSIGNED_SYSTEM_ADDRESS);
-				CNetDevice::peer->SetOccasionalPing(true);
-				CNetDevice::peer->SetUnreliableTimeout(1000);
+				CNetDevice::SetServerConfigs();
 			}
 	};
 }
