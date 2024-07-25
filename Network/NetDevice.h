@@ -1,6 +1,5 @@
 #pragma once
 
-#include "slikenet/peerinterface.h"
 #include "Definition.h"
 
 namespace Net

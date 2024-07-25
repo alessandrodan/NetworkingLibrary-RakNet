@@ -1,8 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <slikenet/MessageIdentifiers.h>
-#include <slikenet/types.h>
 #include "NetDevice.h"
 #include "Definition.h"
 

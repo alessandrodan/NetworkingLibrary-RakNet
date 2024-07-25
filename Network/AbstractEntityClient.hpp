@@ -3,7 +3,6 @@
 #include "StdAfx.h"
 #include "AbstractEntity.h"
 #include "NetDevice.h"
-#include <slikenet/types.h>
 #include "Definition.h"
 
 namespace Net

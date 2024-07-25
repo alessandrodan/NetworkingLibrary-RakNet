@@ -1,7 +1,9 @@
 #pragma once
 
+#include "slikenet/peerinterface.h"
 #include <slikenet/types.h>
 #include <slikenet/BitStream.h>
+#include <slikenet/MessageIdentifiers.h>
 
 #define SERVER_MAX_CONNECTIONS	10
 #define SERVER_MAX_INCOMING_CONNECTIONS	5

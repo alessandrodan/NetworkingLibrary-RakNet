@@ -1,6 +1,5 @@
 #pragma once
 
-#include <slikenet/types.h>
 #include "PacketDefinition.h"
 
 namespace Net
