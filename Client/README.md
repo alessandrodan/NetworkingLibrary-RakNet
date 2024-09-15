@@ -17,7 +17,7 @@ Il punto d'ingresso dell'applicazione client. Qui vengono inizializzate le risor
 
 
 ### 2. **Classe `Client`**
-La classe `Client` eredita da due classi astratte, `Net::CAbstractEntityClient` e `Net::CAbstractPacketClientHandler<Client>`, fornendo una struttura che implementa la logica di rete specifica per un client.
+La classe `Client` eredita da due classi astratte, `Net::CAbstractEntityClient` e `Net::CAbstractPacketClientHandler<Client>`, implementando la logica di rete per un client.
 - **Costruttore**: Inizializza il gestore dei pacchetti e imposta lo stato del client come disconnesso.
 - **Eventi di connessione**:
   - `__OnInitFail`, `__OnInitSuccess`: Gestiscono il successo o il fallimento dell'inizializzazione.
