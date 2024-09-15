@@ -9,7 +9,7 @@ NetworkingLibrary-RakNet è una libreria progettata per la gestione di connessio
 
 1. **Libreria di rete**: Fornisce le funzionalità per gestire le connessioni di rete. Si interfaccia con le API di SLikeNet e implementa la logica di comunicazione tra client e server, occupandosi anche della gestione dei pacchetti e delle diverse fasi di comunicazione.
 
-2. **Client**: Il client eredita e personalizza le classi fornite dalla libreria di rete. È responsabile della connessione al server, della gestione della comunicazione tramite pacchetti strutturati e seguire il flusso di comunicazione stabilito (es. handshake, autenticazione, scambio di dati).
+2. **Client**: Il client eredita e personalizza le classi fornite dalla libreria di rete. È responsabile della connessione al server, della gestione della comunicazione tramite pacchetti strutturati e seguire il flusso di comunicazione stabilito (es. handshake e poi autenticazione).
 
 3. **Server**: Il server eredita e personalizza le classi fornite dalla libreria di rete. Gestisce le operazioni lato server e il flusso di dati tra più connessioni simultanee. Implementa le diverse fasi di comunicazione e include funzionalità per monitorare e amministrare le connessioni attive.
 
@@ -20,7 +20,7 @@ NetworkingLibrary-RakNet è una libreria progettata per la gestione di connessio
 
 - **Comunicazione TCP**
 - **Programmazione orientata agli oggetti**
-- **Fasi di comunicazione**: Include fasi predefinite come handshake, autenticazione e scambio dati operativo.
+- **Fasi di comunicazione**: Include fasi predefinite come handshake e autenticazione.
 - **Gestione pacchetti estendibile**: Permette la creazione e gestione di pacchetti personalizzati.
 - **Architettura modulare ed estensibile**: Facilita l'integrazione di nuove funzionalità senza alterare la struttura esistente.
 - **Connessioni multi-client**: Supporta più client simultanei, con opzioni per configurare timeout e numero massimo di connessioni.
